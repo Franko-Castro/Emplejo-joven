@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — EmpleoJoven</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+  <!-- ============================================
+     TOP NAVBAR
+     ============================================ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <!-- Brand -->
+      <div class="topbar-brand">
+        <button id="sidebarToggle" class="sidebar-toggle-btn lg:hidden">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a href="dashboard-postulante.html" class="brand-link">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEN3Hrty16niOb5EqSw3ZS-Sss3iopV6f7bmMWpTK0v0nLcuGLPz6jzlJxBpTsaTLXYSqrrownRpj34VqN05sUzP3q7Mo7kvDsQ1EVSPQffKW6z4fUPpDSWLmMNQWXcvNlZpADHigEuvlmuRZtqtlQNyspnpB2pAWIjWecrykbHi_2JdUN_D_9AQE49YpyNzPoL4BzmvXkJfj1rtPugk1SE_ln8uM0EBrb78dNW6U0MElwhp69aNAmW8_0UoZ3FZiTbg"
+            alt="Logo" class="brand-logo">
+          <span class="brand-name">EmpleoJoven</span>
+        </a>
+      </div>
+
+      <!-- Desktop Links -->
+      <nav class="topbar-nav">
+        <a href="dashboard-postulante.html" class="topbar-link active" id="topbarHomeBtn">Inicio</a>
+        <a href="#" class="topbar-link" id="topbarJobsBtn">Trabajos</a>
+        <a href="#" class="topbar-link">Eventos</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="topbar-actions">
+        <div class="search-box">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" id="globalSearch" placeholder="Buscar empleos...">
+        </div>
+        <button class="icon-btn" id="notifBtn" aria-label="Notificaciones">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="notif-dot"></span>
+        </button>
+        <div class="user-avatar" id="userAvatarBtn">
+          <img id="navUserPhoto"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGF39068ZsKH6PfCL0I-mj6qbC3hf9i3RVeP6zlkZcmeWG7_3hIdqrhdgKs9oj85-hgT4JHFEElJ0qHB9MalbICxMd0tPVzerCrXFk0ZJT9XVP-1cIE4gpZnUZP4p0yeUNU3zuMysW8andOrZAeYrrw30nULtU6TPsHAKCmj_ttyIGYZb-gn_dzGBDUg-nF0bL0rCgH9Am2qrrZESTKlK5drdCQPycZLMmLp_JcBy-VfViJaP6PXWg"
+            alt="Foto de perfil">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+     SIDEBAR (Desktop / Mobile Drawer)
+     ============================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header-mobile">
+      <span class="brand-name">EmpleoJoven</span>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Cerrar menú">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard-postulante.html" class="sidebar-link active">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="sidebar-link" id="sidebarProfileBtn">
+        <span class="material-symbols-outlined">person</span>
+        <span>Mi Perfil</span>
+      </a>
+      <a href="#" class="sidebar-link" id="sidebarCvBtn">
+        <span class="material-symbols-outlined">work</span>
+        <span>Mi hoja de vida</span>
+      </a>
+      <a href="#" class="sidebar-link" id="sidebarSavedBtn">
+        <span class="material-symbols-outlined">bookmark</span>
+        <span>Empleos Guardados</span>
+      </a>
+      <a href="#" class="sidebar-link" id="sidebarSettingsBtn">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Configuración</span>
+      </a>
+      <a href="#" class="sidebar-link" id="logoutBtn" style="margin-top: auto; color: var(--error, #ff4d4d);">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-new-cv" id="newCvBtn">
+        <span class="material-symbols-outlined">upload_file</span>
+        Subir / Nuevo CV
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="page-header">
+      <div class="page-header-text">
+        <h1 id="welcomeTitle">¡Hola! Encuentra tu próximo reto hoy.</h1>
+        <p id="welcomeSubtitle">Tu perfil está un 85% completo. Estás listo para destacar.</p>
+      </div>
+
+      <!-- Profile Completion Mini Card -->
+      <div class="completion-card" id="completionCard" style="cursor: pointer;" title="Haz clic para editar tu perfil">
+        <div class="completion-chart">
+          <svg viewBox="0 0 36 36">
+            <path class="track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="progress" id="completionCircle"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <span class="completion-percent" id="completionPercent">85%</span>
+        </div>
+        <div class="completion-info">
+          <p>Completar Perfil</p>
+          <a href="#" id="completionAction">Añadir portafolio →</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bento Grid -->
+    <div class="bento-grid">
+
+      <!-- LEFT: Featured Jobs -->
+      <section class="jobs-area">
+        <div class="section-header">
+          <h2>Empleos Destacados</h2>
+          <a href="#">Ver todos</a>
+        </div>
+
+        <div class="job-list" id="jobList">
+          <div class="jobs-loading">
+            <span class="material-symbols-outlined">sync</span>
+            <p>Cargando empleos disponibles...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Sidebar Widgets -->
+      <aside class="widgets-area">
+
+        <!-- Events Widget -->
+        <div class="widget">
+          <div class="widget-header">
+            <h3><span class="material-symbols-outlined">calendar_today</span> Próximos Eventos</h3>
+          </div>
+          <div class="widget-body">
+            <div id="dashboardEventsList"><p class="event-row">Cargando eventos...</p></div>
+          </div>
+          <button class="widget-btn" id="openEventsCalendar" type="button">Ver Calendario</button>
+        </div>
+
+        <!-- Career Tip Widget -->
+        <div class="widget tip-widget">
+          <div class="tip-bg"></div>
+          <div class="tip-content">
+            <span class="material-symbols-outlined tip-icon">lightbulb</span>
+            <h3>Tip de Carrera</h3>
+            <p>Personaliza siempre tu carta de presentación para cada oferta. Menciona un proyecto específico de la
+              empresa que te apasione.</p>
+            <a href="#" class="tip-link">Leer más consejos <span
+                class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- ============================================
+     BOTTOM NAV (Mobile)
+     ============================================ -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a href="dashboard-postulante.html" class="bottom-link active">
+      <span class="material-symbols-outlined">home</span>
+      <span>Inicio</span>
+    </a>
+    <a href="#" class="bottom-link" id="bottomJobsBtn">
+      <span class="material-symbols-outlined">work</span>
+      <span>Trabajos</span>
+    </a>
+    <a href="#" class="bottom-link" id="bottomCvBtn">
+      <span class="material-symbols-outlined">description</span>
+      <span>Mi CV</span>
+    </a>
+    <a href="#" class="bottom-link" id="bottomProfileBtn">
+      <span class="material-symbols-outlined">person</span>
+      <span>Mi Perfil</span>
+    </a>
+  </nav>
+
+  <div class="modal-backdrop" id="eventsCalendarModal" aria-hidden="true">
+    <section class="job-modal" role="dialog" aria-modal="true" aria-labelledby="eventsCalendarTitle">
+      <div class="job-modal-header">
+        <div><h2 id="eventsCalendarTitle">Calendario de eventos</h2><p>Encuentra actividades próximas para impulsar tu perfil.</p></div>
+        <button class="modal-close" id="closeEventsCalendar" type="button" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="vacancy-detail-body" id="eventsCalendarList"></div>
+    </section>
+  </div>
+
+  <!-- ============================================
+     MODAL EDITAR PERFIL DEL POSTULANTE / EMPLEADO
+     ============================================ -->
+  <div class="modal-backdrop" id="applicantProfileModal" aria-hidden="true">
+    <section class="job-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="job-modal-header">
+        <div>
+          <h2 id="profileModalTitle">Mi Perfil Profesional</h2>
+          <p>Mantén tu información y hoja de vida actualizadas para recibir mejores oportunidades.</p>
+        </div>
+        <button class="modal-close" id="closeApplicantProfileModal" type="button" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <form id="applicantProfileForm" class="job-form" enctype="multipart/form-data">
+        <!-- 1. Nombre completo -->
+        <label>
+          Nombre completo *
+          <input name="nombre_completo" id="profileFullName" maxlength="150" required placeholder="Ej. Juan Pérez">
+        </label>
+
+        <!-- 2. Correo electrónico -->
+        <label>
+          Correo electrónico *
+          <input name="correo" id="profileEmail" type="email" maxlength="150" required placeholder="tu@correo.com">
+        </label>
+
+        <!-- 3. Número de teléfono -->
+        <label>
+          Número de teléfono
+          <input name="telefono" id="profilePhone" maxlength="30" placeholder="Ej. +57 300 123 4567">
+        </label>
+
+        <!-- 4. Cargo o profesión -->
+        <label>
+          Cargo o profesión
+          <input name="cargo_profesion" id="profileJobProfession" maxlength="150" placeholder="Ej. Desarrollador Web, Diseñador Gráfico">
+        </label>
+
+        <!-- 5. Categoría -->
+        <label>
+          Categoría o sector
+          <select name="id_categoria" id="profileCategory">
+            <option value="">Selecciona tu área o sector...</option>
+          </select>
+        </label>
+
+        <!-- 6. Cargo de interés -->
+        <label>
+          Cargo de interés
+          <input name="cargo_interes" id="profileTargetRole" maxlength="150" placeholder="Ej. Frontend Developer, Administrador">
+        </label>
+
+        <!-- 7. Foto de perfil -->
+        <div class="job-form-full">
+          <label>
+            Foto de perfil
+            <input name="foto_perfil" id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp">
+            <small>Formatos aceptados: PNG, JPG o WEBP (máx. 3 MB). Déjalo vacío para conservar tu foto actual.</small>
+          </label>
+          <div class="photo-preview-wrap" style="margin-top: 8px;">
+            <img id="profilePhotoPreview" class="photo-preview" src="" alt="Vista previa de perfil">
+            <span class="photo-preview-text" id="profilePhotoLabel">Foto de perfil actual o predeterminada.</span>
+          </div>
+        </div>
+
+        <!-- 8. Descripción profesional -->
+        <label class="job-form-full">
+          Descripción profesional
+          <textarea name="descripcion_profesional" id="profileDescription" rows="3" placeholder="Escribe un resumen sobre tu perfil, motivación, experiencia destacada y lo que buscas aportar."></textarea>
+        </label>
+
+        <!-- 9. Experiencia laboral -->
+        <label class="job-form-full">
+          Experiencia
+          <textarea name="experiencia" id="profileExperience" rows="3" placeholder="Detalla tus empleos anteriores, empresas, cargos ocupados y logros alcanzados."></textarea>
+        </label>
+
+        <!-- 10. Habilidades -->
+        <label class="job-form-full">
+          Habilidades
+          <textarea name="habilidades" id="profileSkills" rows="2" placeholder="Ej. JavaScript, PHP, React, MySQL, Trabajo en equipo, Liderazgo (separadas por comas)"></textarea>
+        </label>
+
+        <!-- 11. Hoja de Vida (CV) -->
+        <div class="job-form-full">
+          <label>
+            Hoja de vida (CV)
+            <input name="hoja_de_vida" id="profileCvInput" type="file" accept=".pdf,.doc,.docx">
+            <small>Formatos aceptados: PDF, DOC, DOCX (máximo 8 MB).</small>
+          </label>
+          <div id="currentCvContainer" class="current-cv-box" style="display: none;">
+            <div class="cv-info">
+              <span class="material-symbols-outlined">description</span>
+              <span id="currentCvName">archivo.pdf</span>
+            </div>
+            <a id="currentCvLink" href="#" target="_blank" class="btn-cv-download">
+              <span class="material-symbols-outlined">download</span> Ver / Descargar
+            </a>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="job-form-actions job-form-full modal-footer">
+          <button type="button" class="btn-secondary" id="cancelApplicantProfile">Cancelar</button>
+          <button type="submit" class="btn-publish" id="saveApplicantProfile">
+            <span class="material-symbols-outlined">save</span>
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- ============================================
+     MODAL DETALLE DE VACANTE
+     ============================================ -->
+  <div class="modal-backdrop" id="vacancyDetailModal" aria-hidden="true">
+    <section class="job-modal vacancy-detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailJobTitle">
+      <div class="job-modal-header">
+        <div class="modal-company-header">
+          <div class="modal-company-logo">
+            <img id="detailCompanyLogo" src="" alt="Logo de la empresa">
+          </div>
+          <div>
+            <h2 id="detailJobTitle">Cargo</h2>
+            <p id="detailCompanyName" class="modal-company-name">Empresa</p>
+          </div>
+        </div>
+        <button class="modal-close" id="closeVacancyDetailModal" type="button" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <div class="vacancy-meta-tags">
+        <span class="meta-tag" id="detailCategory"><span class="material-symbols-outlined">category</span> Categoría</span>
+        <span class="meta-tag" id="detailDate"><span class="material-symbols-outlined">schedule</span> Fecha</span>
+        <span class="meta-tag badge-active"><span class="material-symbols-outlined">verified</span> Oferta Activa</span>
+      </div>
+
+      <div class="vacancy-detail-body">
+        <div class="detail-section">
+          <h3><span class="material-symbols-outlined">description</span> Descripción del empleo</h3>
+          <p id="detailDescription" class="detail-text"></p>
+        </div>
+
+        <div class="detail-section">
+          <h3><span class="material-symbols-outlined">psychology</span> Habilidades requeridas</h3>
+          <div id="detailSkills" class="detail-tags-container"></div>
+        </div>
+
+        <div class="detail-section">
+          <h3><span class="material-symbols-outlined">workspace_premium</span> Experiencia requerida</h3>
+          <p id="detailExperience" class="detail-text"></p>
+        </div>
+
+        <div class="detail-section contact-card">
+          <div class="contact-card-header">
+            <span class="material-symbols-outlined icon-contact">send</span>
+            <div>
+              <h4>¿Te interesa esta vacante?</h4>
+              <p>Ponte en contacto directo con la empresa a través de sus datos de contacto:</p>
+            </div>
+          </div>
+          <div id="detailContactInfo" class="contact-info-content"></div>
+        </div>
+      </div>
+
+      <div class="job-form-actions modal-footer">
+        <button type="button" class="btn-secondary" id="closeDetailBtn">Cerrar</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <div class="toast-inner" id="toastInner">
+      <span class="material-symbols-outlined" id="toastIcon">check_circle</span>
+      <span id="toastMessage">Mensaje</span>
+    </div>
+  </div>
+
+  <script src="Js/dashboard.js?v=20260904"></script>
+</body>
+
+</html>

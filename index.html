@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmpleoJoven — Conectando Talento Joven con Oportunidades</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css?v=20260906-jobs-skeleton">
+</head>
+
+<body>
+
+  <!-- ============================================
+     NAVBAR
+     ============================================ -->
+  <header class="navbar">
+    <div class="glass-nav rounded-full flex justify-between items-center px-4 md:px-6 py-3">
+      <!-- Left: Logo + Links -->
+      <div class="flex items-center gap-3 md:gap-6">
+        <button id="mobileMenuBtn"
+          class="md:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-on-surface-variant">menu</span>
+        </button>
+        <a href="index.html" class="flex items-center gap-2">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEN3Hrty16niOb5EqSw3ZS-Sss3iopV6f7bmMWpTK0v0nLcuGLPz6jzlJxBpTsaTLXYSqrrownRpj34VqN05sUzP3q7Mo7kvDsQ1EVSPQffKW6z4fUPpDSWLmMNQWXcvNlZpADHigEuvlmuRZtqtlQNyspnpB2pAWIjWecrykbHi_2JdUN_D_9AQE49YpyNzPoL4BzmvXkJfj1rtPugk1SE_ln8uM0EBrb78dNW6U0MElwhp69aNAmW8_0UoZ3FZiTbg"
+            alt="EmpleoJoven Logo" class="h-8 md:h-10 w-auto rounded-full bg-white p-0.5">
+          <span class="hidden md:block font-headline-md text-primary text-lg font-bold">EmpleoJoven</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="#proposito" class="nav-link">Propósito</a>
+          <a href="#trabajos" class="nav-link">Trabajos</a>
+          <a href="#eventos" class="nav-link">Eventos</a>
+        </nav>
+      </div>
+
+      <!-- Center: Search -->
+      <div class="nav-search hidden lg:block mx-4">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input id="jobSearch" type="search" placeholder="Buscar vacantes..." aria-label="Buscar vacantes">
+      </div>
+
+      <!-- Right: Actions -->
+      <div class="flex items-center gap-2 md:gap-3">
+        <a href="#tabRegister" id="navRegisterBtn" class="nav-btn-ghost hidden sm:inline-block">Registrarse</a>
+        <button id="searchButton" class="nav-btn-primary" type="button">
+          <span class="material-symbols-outlined" style="font-size:16px">search</span>
+          <span class="hidden sm:inline">Buscar</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileOverlay" class="mobile-overlay"></div>
+
+  <!-- Mobile Menu Drawer -->
+  <aside id="mobileMenu" class="mobile-menu">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-8">
+        <span class="text-xl font-bold text-primary">Menú</span>
+        <button id="closeMobileMenu"
+          class="w-9 h-9 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined text-on-surface-variant">close</span>
+        </button>
+      </div>
+      <nav class="space-y-1">
+        <a href="#proposito" class="mobile-link">
+          <span class="material-symbols-outlined icon">rocket_launch</span> Propósito
+        </a>
+        <a href="#trabajos" class="mobile-link">
+          <span class="material-symbols-outlined icon">work</span> Trabajos
+        </a>
+        <a href="#eventos" class="mobile-link">
+          <span class="material-symbols-outlined icon">event</span> Eventos
+        </a>
+        <a href="#tabRegister" id="mobileRegisterBtn" class="mobile-link">
+          <span class="material-symbols-outlined icon">person_add</span> Registrarse
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- ============================================
+     HERO SECTION — LOGIN / REGISTER
+     ============================================ -->
+  <section class="hero">
+    <!-- Background Carousel -->
+    <div class="hero-bg">
+      <div class="hero-slide active" style="background-image: url('imagenes/puente.jpeg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/cangrejo.jpeg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/atardecer.jpeg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/canoa.jpeg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/platanos.jpg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/IMG_0099.JPG.jpeg');"></div>
+      <div class="hero-slide" style="background-image: url('imagenes/IMG_8763.JPG.jpeg');"></div>
+
+    </div>
+    <div class="hero-overlay"></div>
+
+    <!-- Auth Card -->
+    <div class="hero-content">
+      <div class="auth-card">
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active">Acceder</button>
+          <button id="tabRegister" class="auth-tab">Registrarse</button>
+        </div>
+
+        <!-- ===== LOGIN PANEL ===== -->
+        <div id="panelLogin" class="auth-panel">
+          <div class="text-center mb-6">
+            <h1 class="auth-title">¡Bienvenido de nuevo!</h1>
+            <p class="auth-subtitle">Inicia sesión para impulsar tu futuro.</p>
+          </div>
+
+          <!-- Role Selection -->
+          <div class="role-selector">
+            <label class="role-card active-joven">
+              <input type="radio" name="loginRole" value="joven" checked>
+              <span class="material-symbols-outlined role-icon text-primary">school</span>
+              <div class="role-label">Jóvenes</div>
+              <div class="role-desc">Postula tu CV</div>
+            </label>
+            <label class="role-card">
+              <input type="radio" name="loginRole" value="empresa">
+              <span class="material-symbols-outlined role-icon text-secondary">domain</span>
+              <div class="role-label">Empresas</div>
+              <div class="role-desc">Publica vacantes</div>
+            </label>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">Correo Electrónico</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">mail</span>
+                <input type="email" id="loginEmail" class="form-input" placeholder="tu@correo.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="loginPassword">Contraseña</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">lock</span>
+                <input type="password" id="loginPassword" class="form-input with-toggle" placeholder="••••••••"
+                  required>
+                <button type="button" class="input-toggle" data-target="loginPassword">
+                  <span class="material-symbols-outlined" style="font-size:18px">visibility_off</span>
+                </button>
+              </div>
+              <div class="text-right mt-2">
+                <a href="#" class="text-primary text-xs font-medium hover:underline">¿Olvidaste tu contraseña?</a>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <span>Ingresar</span>
+              <span class="material-symbols-outlined btn-icon">arrow_forward</span>
+            </button>
+          </form>
+
+          <p class="auth-footer">
+            ¿No tienes una cuenta? <button type="button" id="goToRegister">Regístrate aquí</button>
+          </p>
+        </div>
+
+        <!-- ===== REGISTER PANEL ===== -->
+        <div id="panelRegister" class="auth-panel hidden">
+          <div class="text-center mb-6">
+            <h1 class="auth-title">Crear Cuenta</h1>
+            <p class="auth-subtitle">Únete a EmpleoJoven hoy mismo.</p>
+          </div>
+
+          <!-- Role Selection -->
+          <div class="role-selector">
+            <label class="role-card active-joven">
+              <input type="radio" name="regRole" value="joven" checked>
+              <span class="material-symbols-outlined role-icon text-primary">school</span>
+              <div class="role-label">Jóvenes</div>
+              <div class="role-desc">Postula tu CV</div>
+            </label>
+            <label class="role-card">
+              <input type="radio" name="regRole" value="empresa">
+              <span class="material-symbols-outlined role-icon text-secondary">domain</span>
+              <div class="role-label">Empresas</div>
+              <div class="role-desc">Publica vacantes</div>
+            </label>
+          </div>
+
+          <!-- Register Form -->
+          <form id="registerForm">
+            <!-- Campos para Jóvenes -->
+            <div id="regYouthFields" class="grid grid-cols-2 gap-3">
+              <div class="form-group mb-0">
+                <label class="form-label" for="regNombre">Nombre</label>
+                <input type="text" id="regNombre" class="form-input" style="padding-left:14px" placeholder="Tu nombre"
+                  required>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label" for="regApellido">Apellido</label>
+                <input type="text" id="regApellido" class="form-input" style="padding-left:14px"
+                  placeholder="Tu apellido" required>
+              </div>
+            </div>
+
+            <!-- Campos para Empresas -->
+            <div id="regCompanyFields" class="form-group mb-0 hidden">
+              <label class="form-label" for="regNombreEmpresa">Nombre de la Empresa</label>
+              <input type="text" id="regNombreEmpresa" class="form-input" style="padding-left:14px"
+                placeholder="Nombre de tu empresa">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regEmail">Correo Electrónico</label>
+              <input type="email" id="regEmail" class="form-input" style="padding-left:14px" placeholder="tu@correo.com"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regPassword">Contraseña</label>
+              <div class="input-wrapper">
+                <input type="password" id="regPassword" class="form-input with-toggle" style="padding-left:14px"
+                  placeholder="Mínimo 8 caracteres" minlength="8" required>
+                <button type="button" class="input-toggle" data-target="regPassword">
+                  <span class="material-symbols-outlined" style="font-size:18px">visibility_off</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regConfirmPassword">Confirmar Contraseña</label>
+              <div class="input-wrapper">
+                <input type="password" id="regConfirmPassword" class="form-input with-toggle" style="padding-left:14px"
+                  placeholder="••••••••" required>
+                <button type="button" class="input-toggle" data-target="regConfirmPassword">
+                  <span class="material-symbols-outlined" style="font-size:18px">visibility_off</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="checkbox-wrapper mb-4">
+              <input type="checkbox" id="regTerms" required>
+              <label for="regTerms">Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de
+                  Privacidad</a></label>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <span>Crear cuenta</span>
+              <span class="material-symbols-outlined btn-icon">arrow_forward</span>
+            </button>
+          </form>
+
+          <!-- Social Login -->
+          <div class="social-divider">
+            <span>o con</span>
+          </div>
+          <div class="social-buttons">
+            <button type="button" class="social-btn">
+              <svg viewBox="0 0 24 24">
+                <path fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                <path fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+              Google
+            </button>
+            <button type="button" class="social-btn">
+              <svg viewBox="0 0 24 24">
+                <path fill="#1877F2"
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              Facebook
+            </button>
+          </div>
+
+          <p class="auth-footer">
+            ¿Ya tienes una cuenta? <button type="button" id="goToLogin">Inicia sesión</button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+     PROPÓSITO SECTION
+     ============================================ -->
+  <section id="proposito" class="purpose-section reveal">
+    <div class="purpose-container">
+      <!-- Left Column: Text & Features -->
+      <div class="purpose-text-side">
+        <h2 class="purpose-section-title">Nuestro Propósito</h2>
+        <p class="purpose-section-desc">Conectamos el talento joven con las mejores oportunidades, impulsando el
+          desarrollo profesional y ayudando a las empresas a encontrar a los líderes del mañana.</p>
+
+        <div class="purpose-mini-grid">
+          <div class="purpose-mini-card">
+            <span class="material-symbols-outlined icon">rocket_launch</span>
+            <div>
+              <h4>Impulso Profesional</h4>
+              <p>Brindamos las herramientas y conexiones necesarias para que despegues en tu carrera desde el primer
+                día.</p>
+            </div>
+          </div>
+          <div class="purpose-mini-card">
+            <span class="material-symbols-outlined icon">handshake</span>
+            <div>
+              <h4>Conexión Estratégica</h4>
+              <p>Acercamos a los mejores perfiles con empresas que buscan innovación, compromiso y talento fresco.</p>
+            </div>
+          </div>
+          <div class="purpose-mini-card">
+            <span class="material-symbols-outlined icon">trending_up</span>
+            <div>
+              <h4>Crecimiento Continuo</h4>
+              <p>Fomentamos el aprendizaje y el desarrollo a través de eventos, talleres y recursos exclusivos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Image -->
+      <div class="purpose-image-side">
+        <div class="purpose-image-wrapper">
+          <img src="imagenes/IMG_9879.JPG.jpeg" alt="Nuestro Propósito">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+     TRABAJOS DESTACADOS
+     ============================================ -->
+  <section id="trabajos" class="jobs-section">
+    <div class="jobs-header">
+      <div>
+        <h2>Trabajos Destacados</h2>
+        <p>Descubre las oportunidades más recientes para iniciar tu carrera.</p>
+      </div>
+      <a href="#" id="verTodasBtn" class="jobs-see-all">
+        Ver todas las vacantes <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Skeleton Loader (visible mientras carga) -->
+    <div class="jobs-grid" id="jobsSkeletonGrid" aria-hidden="true" hidden>
+      <div class="job-card job-card-skeleton">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-company"></div>
+        <div class="skeleton-btn"></div>
+      </div>
+      <div class="job-card job-card-skeleton">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-company"></div>
+        <div class="skeleton-btn"></div>
+      </div>
+      <div class="job-card job-card-skeleton">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-company"></div>
+        <div class="skeleton-btn"></div>
+      </div>
+    </div>
+
+    <!-- Grid de vacantes reales -->
+    <div class="jobs-grid" id="jobsGrid" hidden></div>
+
+    <!-- Estado vacío / sin conexión -->
+    <p id="noJobsMessage" class="no-jobs-message" hidden>No hay vacantes disponibles en este momento. ¡Vuelve pronto!
+    </p>
+
+    <div class="jobs-footer-link">
+      <a href="#" id="verTodasMobileBtn">Ver todas las vacantes</a>
+    </div>
+  </section>
+
+  <!-- ============================================
+     MODAL — REGÍSTRATE PARA POSTULAR
+     ============================================ -->
+  <div id="registerPromptModal" class="rp-backdrop" role="dialog" aria-modal="true" aria-labelledby="rpModalTitle">
+    <div class="rp-modal">
+      <!-- Decorative top bar -->
+      <div class="rp-topbar"></div>
+
+      <button class="rp-close" id="rpCloseBtn" aria-label="Cerrar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <!-- Job preview info (se rellena desde JS) -->
+      <div class="rp-job-preview">
+        <div class="rp-job-icon" id="rpJobIcon">
+          <span class="material-symbols-outlined">work</span>
+        </div>
+        <div>
+          <h3 id="rpJobTitle" class="rp-job-title">—</h3>
+          <p id="rpJobCompany" class="rp-job-company">—</p>
+        </div>
+      </div>
+
+      <!-- Modal body -->
+      <div class="rp-body">
+        <div class="rp-lock-icon">
+          <span class="material-symbols-outlined">lock</span>
+        </div>
+        <h2 id="rpModalTitle" class="rp-title">¡Crea tu cuenta gratis!</h2>
+        <p class="rp-desc">
+          Para ver los detalles completos y <strong>postular a esta vacante</strong>,
+          necesitas tener una cuenta en EmpleoJoven. ¡Es gratis y solo toma un minuto!
+        </p>
+
+        <div class="rp-benefits">
+          <div class="rp-benefit-item">
+            <span class="material-symbols-outlined">check_circle</span>
+            Accede a todos los detalles de la oferta
+          </div>
+          <div class="rp-benefit-item">
+            <span class="material-symbols-outlined">check_circle</span>
+            Postula con un solo clic
+          </div>
+          <div class="rp-benefit-item">
+            <span class="material-symbols-outlined">check_circle</span>
+            Recibe notificaciones de nuevas vacantes
+          </div>
+        </div>
+
+        <div class="rp-actions">
+          <button type="button" class="rp-btn-register" id="rpRegisterBtn">
+            <span class="material-symbols-outlined">person_add</span>
+            Crear cuenta gratis
+          </button>
+          <button type="button" class="rp-btn-login" id="rpLoginBtn">
+            Ya tengo cuenta — Iniciar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================
+     EVENTOS
+     ============================================ -->
+  <section id="eventos" class="section">
+    <div class="section-header reveal">
+      <h2 class="section-title">Próximos Eventos</h2>
+      <p class="section-desc">Participa en ferias, talleres y webinars diseñados para potenciar tus habilidades y
+        expandir tu red de contactos.</p>
+    </div>
+
+    <!-- Grid de eventos dinámico -->
+    <div class="events-grid" id="eventsGrid">
+      <div class="event-card reveal">
+        <div class="event-content" style="grid-column: 1 / -1; text-align: center; padding: 30px;">
+          <p style="color: var(--text-muted, #94a3b8);">Cargando eventos programados...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+     FOOTER
+     ============================================ -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div>
+        <div class="footer-brand">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEN3Hrty16niOb5EqSw3ZS-Sss3iopV6f7bmMWpTK0v0nLcuGLPz6jzlJxBpTsaTLXYSqrrownRpj34VqN05sUzP3q7Mo7kvDsQ1EVSPQffKW6z4fUPpDSWLmMNQWXcvNlZpADHigEuvlmuRZtqtlQNyspnpB2pAWIjWecrykbHi_2JdUN_D_9AQE49YpyNzPoL4BzmvXkJfj1rtPugk1SE_ln8uM0EBrb78dNW6U0MElwhp69aNAmW8_0UoZ3FZiTbg"
+            alt="EmpleoJoven Logo">
+          <span>EmpleoJoven</span>
+        </div>
+        <p class="footer-desc">Impulsando el futuro de los jóvenes profesionales y conectando talento con oportunidad.
+        </p>
+      </div>
+
+      <!-- Para Jóvenes -->
+      <div class="footer-col">
+        <h4>Para Jóvenes</h4>
+        <ul>
+          <li><a href="#trabajos">Buscar Empleos</a></li>
+          <li><a href="#tabRegister" id="footerRegisterBtn">Crear Perfil</a></li>
+          <li><a href="#eventos">Recursos y Consejos</a></li>
+        </ul>
+      </div>
+
+      <!-- Para Empresas -->
+      <div class="footer-col">
+        <h4>Para Empresas</h4>
+        <ul>
+          <li><a href="#tabRegister" id="footerPublishBtn">Publicar Vacante</a></li>
+          <li><a href="#tabRegister">Buscar Talentos</a></li>
+          <li><a href="#proposito">Nuestro Propósito</a></li>
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <div class="footer-contact">
+          <span class="material-symbols-outlined icon">mail</span>
+          <span>info@empleojoven.com</span>
+        </div>
+        <div class="footer-contact">
+          <span class="material-symbols-outlined icon">phone</span>
+          <span>+1 234 567 890</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 EmpleoJoven. Todos los derechos reservados.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Términos de Servicio</a>
+        <a href="#">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================
+     MODAL — DETALLE DEL EVENTO
+     ============================================ -->
+  <div id="eventDetailsModal" class="event-details-backdrop" role="dialog" aria-modal="true" aria-labelledby="eventDetailsTitle">
+    <article class="event-details-modal">
+      <div class="event-details-topbar"></div>
+      <button type="button" class="event-details-close" id="eventDetailsClose" aria-label="Cerrar detalles del evento">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="event-details-body">
+        <span class="event-details-type" id="eventDetailsType">Actividad</span>
+        <h2 id="eventDetailsTitle">Evento</h2>
+        <p class="event-details-description" id="eventDetailsDescription"></p>
+        <div class="event-details-info">
+          <p><span class="material-symbols-outlined">schedule</span><span id="eventDetailsDate"></span></p>
+          <p><span class="material-symbols-outlined">location_on</span><span id="eventDetailsModality"></span></p>
+          <p><span class="material-symbols-outlined">groups</span><span id="eventDetailsOrganizer"></span></p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============================================
+     TOAST NOTIFICATION
+     ============================================ -->
+  <div id="toast" class="toast">
+    <div class="toast-inner success" id="toastInner">
+      <span class="material-symbols-outlined toast-icon" id="toastIcon">check_circle</span>
+      <span id="toastMessage">Mensaje</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="Js/script.js?v=20260906-jobs-skeleton"></script>
+</body>
+
+</html>

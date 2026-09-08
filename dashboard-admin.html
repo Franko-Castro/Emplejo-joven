@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración — EmpleoJoven</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="dashboard-admin.css">
+</head>
+
+<body>
+
+  <!-- ============================================
+       TOPBAR NAVBAR
+       ============================================ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <button id="sidebarToggle" class="sidebar-toggle-btn" aria-label="Abrir menú">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a href="dashboard-admin.html" class="brand-link">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEN3Hrty16niOb5EqSw3ZS-Sss3iopV6f7bmMWpTK0v0nLcuGLPz6jzlJxBpTsaTLXYSqrrownRpj34VqN05sUzP3q7Mo7kvDsQ1EVSPQffKW6z4fUPpDSWLmMNQWXcvNlZpADHigEuvlmuRZtqtlQNyspnpB2pAWIjWecrykbHi_2JdUN_D_9AQE49YpyNzPoL4BzmvXkJfj1rtPugk1SE_ln8uM0EBrb78dNW6U0MElwhp69aNAmW8_0UoZ3FZiTbg"
+            alt="Logo EmpleoJoven" class="brand-logo">
+          <div class="brand-text-wrap">
+            <span class="brand-name">EmpleoJoven</span>
+            <span class="brand-badge-admin">Admin Panel</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center status or quick title -->
+      <div class="topbar-title" id="topbarViewTitle">Resumen General</div>
+
+      <!-- Actions -->
+      <div class="topbar-actions">
+        <button class="topbar-btn-refresh" id="refreshDataBtn" title="Recargar datos">
+          <span class="material-symbols-outlined">refresh</span>
+          <span class="hidden sm:inline">Actualizar</span>
+        </button>
+
+        <div class="admin-user-badge">
+          <div class="admin-avatar">
+            <span class="material-symbols-outlined">shield_person</span>
+          </div>
+          <div class="admin-info hidden md:block">
+            <span class="admin-name" id="adminUserName">Administrador</span>
+            <span class="admin-email" id="adminUserEmail">admin@empleojoven.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       SIDEBAR
+       ============================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header-mobile">
+      <span class="brand-name">EmpleoJoven Admin</span>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Cerrar menú">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section-title">MENÚ PRINCIPAL</div>
+
+    <nav class="sidebar-nav">
+      <a href="#resumen" class="sidebar-link active" data-tab="resumen">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#usuarios" class="sidebar-link" data-tab="usuarios">
+        <span class="material-symbols-outlined">group</span>
+        <span>Usuarios</span>
+        <span class="sidebar-pill-count" id="countUsersSidebar">0</span>
+      </a>
+      <a href="#ofertas" class="sidebar-link" data-tab="ofertas">
+        <span class="material-symbols-outlined">work</span>
+        <span>Ofertas Laborales</span>
+        <span class="sidebar-pill-count" id="countOffersSidebar">0</span>
+      </a>
+      <a href="#eventos" class="sidebar-link" data-tab="eventos">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span>Eventos</span>
+        <span class="sidebar-pill-count" id="countEventsSidebar">0</span>
+      </a>
+      <a href="#categorias" class="sidebar-link" data-tab="categorias">
+        <span class="material-symbols-outlined">category</span>
+        <span>Categorías</span>
+      </a>
+      <a href="#" class="sidebar-link" id="logoutBtn" style="margin-top: auto; color: var(--danger);">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-status-indicator">
+        <span class="status-dot-pulse"></span>
+        <span>Sistema Operativo en Línea</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ============================================
+       MAIN CONTENT
+       ============================================ -->
+  <main class="main-content">
+
+    <!-- ============================================
+         SECCIÓN 1: RESUMEN / DASHBOARD
+         ============================================ -->
+    <section class="tab-panel active" id="tabResumen">
+      <div class="page-title-wrap">
+        <div>
+          <h1>Panel de Control del Administrador</h1>
+          <p>Supervisa las métricas clave, usuarios registrados y actividad en tiempo real.</p>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-users">
+            <span class="material-symbols-outlined">group</span>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Total Usuarios</span>
+            <h3 class="kpi-value" id="kpiTotalUsers">-</h3>
+            <span class="kpi-subtext" id="kpiUsersSub">Cargando desglose...</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-candidates">
+            <span class="material-symbols-outlined">school</span>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Postulantes</span>
+            <h3 class="kpi-value" id="kpiPostulantes">-</h3>
+            <span class="kpi-subtext" id="kpiCvsSub">CVs cargados</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-companies">
+            <span class="material-symbols-outlined">domain</span>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Empresas</span>
+            <h3 class="kpi-value" id="kpiEmpresas">-</h3>
+            <span class="kpi-subtext">Cuentas empresariales</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-jobs">
+            <span class="material-symbols-outlined">work</span>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Vacantes Publicadas</span>
+            <h3 class="kpi-value" id="kpiTotalOffers">-</h3>
+            <span class="kpi-subtext" id="kpiOffersSub">Activas y cerradas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento Overview Grid -->
+      <div class="bento-admin-grid">
+        <!-- Izquierda: Categorías & Distribución -->
+        <div class="bento-card">
+          <div class="bento-header">
+            <h3><span class="material-symbols-outlined">pie_chart</span> Ofertas por Categoría</h3>
+          </div>
+          <div class="bento-body" id="categoryDistributionList">
+            <div class="loading-spinner-box">
+              <span class="material-symbols-outlined spin">sync</span>
+              <p>Calculando distribución...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Derecha: Actividad Reciente -->
+        <div class="bento-card">
+          <div class="bento-header">
+            <h3><span class="material-symbols-outlined">history</span> Últimos Registros</h3>
+          </div>
+          <div class="bento-body" id="recentActivityList">
+            <div class="loading-spinner-box">
+              <span class="material-symbols-outlined spin">sync</span>
+              <p>Cargando actividad...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="tab-panel" id="tabEventos">
+      <div class="page-title-wrap">
+        <div><h1>Gestión de Eventos</h1><p>Publica y administra ferias, webinars, talleres y conferencias.</p></div>
+        <button class="btn-primary" id="btnOpenNewEventModal"><span class="material-symbols-outlined">add</span>Nuevo Evento</button>
+      </div>
+      <div class="filter-controls-bar">
+        <div class="search-input-wrap"><span class="material-symbols-outlined">search</span><input id="eventSearchInput" type="text" placeholder="Buscar por título, tipo u organizador..."></div>
+        <div class="filter-dropdowns"><select id="eventStatusFilter" class="admin-select"><option value="todos">Todos los estados</option><option value="1">Activos</option><option value="0">Ocultos</option></select><select id="eventModalityFilter" class="admin-select"><option value="todos">Todas las modalidades</option><option value="virtual">Virtual</option><option value="presencial">Presencial</option><option value="hibrido">Híbrida</option></select></div>
+      </div>
+      <div class="table-card"><div class="table-responsive"><table class="admin-table"><thead><tr><th>Evento</th><th>Modalidad</th><th>Fecha programada</th><th>Organizador</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="eventsTableBody"><tr><td colspan="6" class="text-center py-6">Cargando eventos...</td></tr></tbody></table></div></div>
+    </section>
+
+
+    <!-- ============================================
+         SECCIÓN 2: GESTIÓN DE USUARIOS
+         ============================================ -->
+    <section class="tab-panel" id="tabUsuarios">
+      <div class="page-title-wrap">
+        <div>
+          <h1>Gestión de Usuarios</h1>
+          <p>Administra, modera y consulta todos los postulantes, empresas y administradores de la plataforma.</p>
+        </div>
+      </div>
+
+      <!-- Control & Filter Bar -->
+      <div class="filter-controls-bar">
+        <div class="search-input-wrap">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="userSearchInput" placeholder="Buscar por nombre, correo, cargo o empresa...">
+        </div>
+
+        <div class="filter-dropdowns">
+          <select id="userRoleFilter" class="admin-select">
+            <option value="todos">Todos los roles</option>
+            <option value="persona">Postulantes (Jóvenes)</option>
+            <option value="empresa">Empresas</option>
+            <option value="admin">Administradores</option>
+          </select>
+
+          <select id="userStatusFilter" class="admin-select">
+            <option value="todos">Todos los estados</option>
+            <option value="1">Activos</option>
+            <option value="0">Suspendidos / Inactivos</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Users Table Card -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Contacto</th>
+                <th>Registro</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr>
+                <td colspan="6" class="text-center py-6">
+                  <div class="loading-spinner-box">
+                    <span class="material-symbols-outlined spin">sync</span>
+                    <p>Cargando usuarios...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         SECCIÓN 3: MODERACIÓN DE OFERTAS
+         ============================================ -->
+    <section class="tab-panel" id="tabOfertas">
+      <div class="page-title-wrap">
+        <div>
+          <h1>Moderación de Ofertas Laborales</h1>
+          <p>Revisa todas las vacantes publicadas por las empresas, activa, cierra o elimina publicaciones.</p>
+        </div>
+      </div>
+
+      <!-- Filter Controls Bar -->
+      <div class="filter-controls-bar">
+        <div class="search-input-wrap">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="offerSearchInput" placeholder="Buscar por cargo, empresa, categoría o descripción...">
+        </div>
+
+        <div class="filter-dropdowns">
+          <select id="offerStatusFilter" class="admin-select">
+            <option value="todos">Todos los estados</option>
+            <option value="activa">Activas</option>
+            <option value="cerrada">Cerradas</option>
+          </select>
+
+          <select id="offerCategoryFilter" class="admin-select">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Offers Table Card -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="admin-table" id="offersTable">
+            <thead>
+              <tr>
+                <th>Vacante & Empresa</th>
+                <th>Categoría</th>
+                <th>Fecha Publicación</th>
+                <th>Contacto</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="offersTableBody">
+              <tr>
+                <td colspan="6" class="text-center py-6">
+                  <div class="loading-spinner-box">
+                    <span class="material-symbols-outlined spin">sync</span>
+                    <p>Cargando vacantes...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================
+         SECCIÓN 4: GESTIÓN DE CATEGORÍAS
+         ============================================ -->
+    <section class="tab-panel" id="tabCategorias">
+      <div class="page-title-wrap">
+        <div>
+          <h1>Gestión de Categorías y Sectores</h1>
+          <p>Crea y administra las categorías disponibles para clasificar vacantes y perfiles.</p>
+        </div>
+        <button class="btn-primary" id="btnOpenNewCategoryModal">
+          <span class="material-symbols-outlined">add</span>
+          Nueva Categoría
+        </button>
+      </div>
+
+      <!-- Categories Table Card -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="admin-table" id="categoriesTable">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Ofertas Asociadas</th>
+                <th>Postulantes</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="categoriesTableBody">
+              <tr>
+                <td colspan="6" class="text-center py-6">
+                  <div class="loading-spinner-box">
+                    <span class="material-symbols-outlined spin">sync</span>
+                    <p>Cargando categorías...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ============================================
+       MODALES DE ADMINISTRACIÓN
+       ============================================ -->
+
+  <!-- Modal Detalle de Usuario -->
+  <div class="modal-backdrop" id="userDetailModal" aria-hidden="true">
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="modalUserTitle">
+      <div class="modal-header">
+        <div class="modal-header-profile">
+          <img id="modalUserAvatar" src="" alt="Avatar de usuario" class="modal-avatar">
+          <div>
+            <h2 id="modalUserName">Nombre del Usuario</h2>
+            <p id="modalUserSubtitle" class="modal-subtitle">Rol / Correo</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeUserDetailModal" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <div class="modal-body" id="modalUserContent">
+        <!-- Contenido generado dinámicamente según sea postulante o empresa -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="closeUserDetailBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Detalle de Oferta -->
+  <div class="modal-backdrop" id="offerDetailModal" aria-hidden="true">
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="modalOfferTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalOfferTitle">Cargo de la Vacante</h2>
+          <p id="modalOfferCompany" class="modal-subtitle">Empresa Emisora</p>
+        </div>
+        <button class="modal-close-btn" id="closeOfferDetailModal" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <div class="modal-body" id="modalOfferContent">
+        <!-- Se rellena desde JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="closeOfferDetailBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Crear / Editar Categoría -->
+  <div class="modal-backdrop" id="categoryModal" aria-hidden="true">
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+      <div class="modal-header category-modal-header">
+        <div class="category-modal-heading"><span class="category-modal-icon material-symbols-outlined">category</span><div>
+          <h2 id="categoryModalTitle">Nueva Categoría</h2>
+          <p class="modal-subtitle">Organiza las ofertas por áreas profesionales.</p>
+        </div></div>
+        <button class="modal-close-btn" id="closeCategoryModal" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <form id="categoryForm" class="admin-form category-form">
+        <input type="hidden" id="categoryId" name="id_categoria">
+
+        <div class="category-form-section"><div class="category-section-label"><span class="material-symbols-outlined">edit_note</span>Datos de la categoría</div>
+        <div class="form-group">
+          <label for="categoryName">Nombre de la categoría <span>*</span></label>
+          <input type="text" id="categoryName" name="nombre" class="form-input" required maxlength="100" placeholder="Ej. Inteligencia Artificial, Gastronomía">
+        </div>
+
+        <div class="form-group">
+          <label for="categoryDesc">Descripción</label>
+          <textarea id="categoryDesc" name="descripcion" class="form-textarea" rows="3" maxlength="255" placeholder="Breve descripción del área profesional..."></textarea>
+        </div></div>
+
+        <label class="category-visibility"><span class="category-visibility-icon material-symbols-outlined">toggle_on</span><span><strong>Activar categoría</strong><small>Podrá seleccionarse al publicar nuevas ofertas.</small></span><input type="checkbox" id="categoryActive" name="activo" checked></label>
+
+        <div class="modal-footer category-modal-footer">
+          <button type="button" class="btn-secondary" id="cancelCategoryBtn">Cancelar</button>
+          <button type="submit" class="btn-primary category-create-btn" id="saveCategoryBtn">
+            <span class="material-symbols-outlined">add_task</span>
+            Crear categoría
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="eventModal" aria-hidden="true">
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+      <div class="modal-header event-modal-header"><div class="event-modal-heading"><span class="event-modal-icon material-symbols-outlined">event_available</span><div><h2 id="eventModalTitle">Nuevo Evento</h2><p class="modal-subtitle">Crea una actividad para la comunidad.</p></div></div><button class="modal-close-btn" id="closeEventModal" aria-label="Cerrar">&times;</button></div>
+      <form id="eventForm" class="admin-form event-form">
+        <input type="hidden" id="eventId">
+        <div class="event-form-section"><div class="event-section-label"><span class="material-symbols-outlined">edit_note</span>Información principal</div><div class="form-group"><label for="eventTitle">Título del evento <span>*</span></label><input id="eventTitle" class="form-input" maxlength="200" placeholder="Ej. Feria de empleo juvenil" required></div>
+        <div class="form-group"><label for="eventType">Tipo de evento</label><input id="eventType" class="form-input" value="Webinar Gratuito" maxlength="100" placeholder="Ej. Taller, feria o webinar"></div>
+        <div class="form-group"><label for="eventDescription">Descripción <span>*</span></label><textarea id="eventDescription" class="form-textarea" rows="3" placeholder="Cuenta brevemente qué encontrarán los asistentes..." required></textarea></div></div>
+        <div class="event-form-section"><div class="event-section-label"><span class="material-symbols-outlined">schedule</span>Fecha y ubicación</div><div class="form-row"><div class="form-group"><label for="eventDate">Fecha y hora <span>*</span></label><input id="eventDate" class="form-input" type="datetime-local" required></div><div class="form-group"><label for="eventModality">Modalidad</label><select id="eventModality" class="form-input"><option value="virtual">Virtual</option><option value="presencial">Presencial</option><option value="hibrido">Híbrida</option></select></div></div>
+        <div class="form-group"><label for="eventLocation">Lugar o enlace</label><input id="eventLocation" class="form-input" maxlength="500" placeholder="Ej. Google Meet o dirección del lugar"></div></div>
+        <div class="event-form-section"><div class="event-section-label"><span class="material-symbols-outlined">campaign</span>Convocatoria</div><div class="form-group"><label for="eventRegistration">Enlace de inscripción</label><input id="eventRegistration" class="form-input" type="url" maxlength="500" placeholder="https://..."></div>
+        <div class="form-group"><label for="eventOrganizer">Organizador</label><input id="eventOrganizer" class="form-input" value="EmpleoJoven" maxlength="150"></div>
+        <label class="event-visibility"><span class="event-visibility-icon material-symbols-outlined">visibility</span><span><strong>Publicar inmediatamente</strong><small>El evento será visible para los usuarios al guardarlo.</small></span><input id="eventActive" type="checkbox" checked></label></div>
+        <div class="modal-footer event-modal-footer"><button type="button" class="btn-secondary" id="cancelEventBtn">Cancelar</button><button type="submit" class="btn-primary event-publish-btn"><span class="material-symbols-outlined">publish</span>Publicar evento</button></div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal de Confirmación Crítica -->
+  <div class="modal-backdrop" id="confirmModal" aria-hidden="true">
+    <div class="admin-modal modal-sm" role="dialog" aria-modal="true">
+      <div class="confirm-modal-body">
+        <div class="confirm-icon-wrap" id="confirmIconWrap">
+          <span class="material-symbols-outlined" id="confirmIcon">warning</span>
+        </div>
+        <h3 id="confirmTitle">¿Confirmar Acción?</h3>
+        <p id="confirmMessage">Esta acción no se puede deshacer.</p>
+
+        <div class="confirm-actions">
+          <button type="button" class="btn-secondary" id="confirmCancelBtn">Cancelar</button>
+          <button type="button" class="btn-danger" id="confirmAcceptBtn">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <div class="toast-inner" id="toastInner">
+      <span class="material-symbols-outlined" id="toastIcon">check_circle</span>
+      <span id="toastMessage">Mensaje</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="Js/dashboard-admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis vacantes — EmpleoJoven</title>
+  <link rel="stylesheet" href="dashboard-empresa.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="vacancies-page">
+    <header class="vacancies-page-header">
+      <div>
+        <a class="back-dashboard" href="dashboard-empresa.html"><span class="material-symbols-outlined">arrow_back</span> Volver al panel</a>
+        <h1>Mis vacantes</h1>
+        <p>Consulta, edita o cierra las ofertas publicadas por tu empresa.</p>
+      </div>
+      <a class="btn-publish vacancies-page-publish" href="dashboard-empresa.html#publicar">Publicar nueva vacante</a>
+    </header>
+    <section class="vacancies-page-card">
+      <div class="vacancies-header"><h2>Todas mis ofertas</h2><span class="vacancies-badge" id="vacanciesCount">Cargando...</span></div>
+      <div class="vacancies-list" id="vacanciesList" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="vacancyEditorModal" aria-hidden="true">
+    <section class="job-modal" role="dialog" aria-modal="true" aria-labelledby="vacancyEditorTitle">
+      <div class="job-modal-header"><div><h2 id="vacancyEditorTitle">Gestionar vacante</h2><p>Edita los datos de la oferta o ciérrala.</p></div><button class="modal-close" id="closeVacancyEditor" type="button" aria-label="Cerrar">&times;</button></div>
+      <form id="vacancyEditorForm" class="job-form">
+        <input type="hidden" name="id_oferta" id="editVacancyId">
+        <label>Cargo<input name="cargo" id="editVacancyCargo" maxlength="150" required></label>
+        <label>Categoría<select name="id_categoria" id="editVacancyCategory" required></select></label>
+        <label class="job-form-full">Descripción<textarea name="descripcion" id="editVacancyDescription" required rows="4"></textarea></label>
+        <label>Experiencia requerida<textarea name="experiencia_requerida" id="editVacancyExperience" required rows="3"></textarea></label>
+        <label>Habilidades requeridas<textarea name="habilidades_requeridas" id="editVacancySkills" required rows="3"></textarea></label>
+        <label class="job-form-full">Datos de contacto<textarea name="datos_contacto" id="editVacancyContact" required rows="3"></textarea></label>
+        <label>Estado<select name="estado" id="editVacancyStatus"><option value="activa">Activa</option><option value="cerrada">Cerrada</option></select></label>
+        <div class="job-form-actions vacancy-editor-actions"><button type="button" class="btn-danger" id="closeVacancyBtn">Cerrar vacante</button><span class="vacancy-action-spacer"></span><button type="button" class="btn-secondary" id="cancelVacancyEditor">Cancelar</button><button type="submit" class="btn-publish" id="saveVacancyEditor">Guardar cambios</button></div>
+      </form>
+    </section>
+  </div>
+  <div id="toast" class="toast"><div class="toast-inner" id="toastInner"><span class="material-symbols-outlined" id="toastIcon">check_circle</span><span id="toastMessage">Mensaje</span></div></div>
+  <script src="Js/mis-vacantes.js"></script>
+</body>
+</html>
