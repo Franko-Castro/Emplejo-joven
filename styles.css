@@ -1,8 +1,7 @@
-/* ============================================
+/* 
    EMPLEOJOVEN — DESIGN SYSTEM + ANIMATIONS
-   ============================================ */
+  */
 
-/* ---- Google Fonts Import ---- */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 /* ---- CSS Custom Properties ---- */
@@ -80,7 +79,7 @@
   --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ---- Reset & Base ---- */
+/*  Reset & Base  */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -129,9 +128,9 @@ img {
 ::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--outline); }
 
-/* ============================================
+/* 
    GLASSMORPHISM COMPONENTS
-   ============================================ */
+   */
 
 .glass-nav {
   display: flex;
@@ -165,7 +164,7 @@ img {
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-/* ---- Glass Toast ---- */
+/*  Glass Toast  */
 .glass-toast {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
@@ -174,9 +173,9 @@ img {
   box-shadow: var(--shadow-xl);
 }
 
-/* ============================================
+/* 
    NAVBAR
-   ============================================ */
+    */
 
 .navbar {
   position: fixed;
@@ -318,7 +317,7 @@ img {
   background: rgba(0, 101, 141, 0.06);
 }
 
-/* ---- Mobile Menu ---- */
+/*  Mobile Menu  */
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -374,9 +373,9 @@ img {
   font-size: 22px;
 }
 
-/* ============================================
+/* 
    HERO SECTION
-   ============================================ */
+    */
 
 .hero {
   position: relative;
