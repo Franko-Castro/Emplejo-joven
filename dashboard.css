@@ -201,39 +201,32 @@ img {
 .topbar-nav {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(248, 250, 252, 0.86);
 }
 
 .topbar-link {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
-  padding: 6px 0;
+  padding: 8px 14px;
+  border-radius: 9px;
   position: relative;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .topbar-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  border-radius: 2px;
-  transition: all var(--transition-base);
+  display: none;
 }
 
 .topbar-link:hover,
 .topbar-link.active {
   color: var(--text-primary);
-}
-
-.topbar-link.active::after,
-.topbar-link:hover::after {
-  width: 100%;
-  left: 0;
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-sm);
 }
 
 .topbar-actions {
@@ -244,22 +237,25 @@ img {
 
 .search-box {
   position: relative;
+  width: clamp(220px, 24vw, 320px);
 }
 
 .search-box input {
-  width: 260px;
-  padding: 9px 14px 9px 38px;
+  width: 100%;
+  height: 40px;
+  padding: 9px 16px 9px 42px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-elevated);
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.92);
   font-size: 13px;
   color: var(--text-primary);
-  transition: all var(--transition-base);
+  transition: border-color var(--transition-base), background-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .search-box input:focus {
   outline: none;
   border-color: var(--primary-lighter);
+  background: var(--surface-elevated);
   box-shadow: 0 0 0 3px rgba(185, 199, 228, 0.25);
 }
 
@@ -1730,7 +1726,7 @@ img {
   .topbar-nav {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 4px;
   }
 
   .search-box {
