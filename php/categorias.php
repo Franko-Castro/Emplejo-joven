@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../config/conexion.php";

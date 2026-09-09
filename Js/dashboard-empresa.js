@@ -45,6 +45,10 @@ async function checkSession() {
     }
 
     renderCompany(data.user);
+    companyProfileNeedsCompletion = Number(data.user.perfil_completado || 0) < 100;
+    window.dispatchEvent(new CustomEvent('company-profile-status', {
+      detail: { needsCompletion: companyProfileNeedsCompletion }
+    }));
   } catch (err) {
     console.error('Error verificando sesión:', err);
     window.location.href = 'index.html';
@@ -87,6 +91,7 @@ function renderCompany(company) {
    ============================================================ */
 
 let loadedCandidates = [];
+let companyProfileNeedsCompletion = false;
 
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -571,12 +576,13 @@ function syncSavedCandidateButtons() {
 let isShowingSavedOnly = false;
 
 function initBookmarks() {
-  const savedCandidates = getSavedCandidates();
   syncSavedCandidateButtons();
 
   // Enlace del sidebar: Filtrar candidatos guardados
   const savedLink = document.getElementById('savedCandidatesLink');
-  savedLink?.addEventListener('click', (e) => {
+  if (savedLink && savedLink.dataset.bookmarksBound !== 'true') {
+    savedLink.dataset.bookmarksBound = 'true';
+    savedLink.addEventListener('click', (e) => {
     e.preventDefault();
     const grid = document.getElementById('candidatesGrid');
     const noResults = document.getElementById('noResults');
@@ -611,7 +617,8 @@ function initBookmarks() {
     if (window.innerWidth < 1024) {
       grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  });
+    });
+  }
 
   document.querySelectorAll('.bookmark-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -874,6 +881,26 @@ function initPublishJob() {
   };
 
   const handlePublish = async () => {
+    try {
+      const profileResponse = await fetch('php/perfil_empresa.php');
+      const profileResult = await profileResponse.json();
+      const profile = profileResult.data || {};
+      const profileComplete = profile.nombre_empresa?.trim()
+        && profile.correo?.trim()
+        && profile.telefono?.trim()
+        && profile.descripcion?.trim()
+        && profile.id_categoria;
+
+      if (!profileResponse.ok || !profileResult.success || !profileComplete) {
+        showToast('Completa los datos de tu empresa antes de publicar una vacante', 'error');
+        document.getElementById('companyProfileBtn')?.click();
+        return;
+      }
+    } catch (error) {
+      showToast('No fue posible verificar los datos de tu empresa', 'error');
+      return;
+    }
+
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.getElementById('jobTitle')?.focus();
@@ -1019,6 +1046,20 @@ function initCompanyProfile() {
 
   openBtn.addEventListener('click', openModal);
 
+  const promptForCompletion = () => {
+    if (!companyProfileNeedsCompletion) return;
+    showToast('Completa los datos de tu empresa para poder publicar vacantes', 'error');
+    openModal({ preventDefault() {} });
+  };
+
+  window.addEventListener('company-profile-status', event => {
+    if (event.detail?.needsCompletion) promptForCompletion();
+  }, { once: true });
+
+  if (companyProfileNeedsCompletion) {
+    setTimeout(promptForCompletion, 0);
+  }
+
   document.getElementById('closeCompanyProfileModal')?.addEventListener('click', closeModal);
   document.getElementById('cancelCompanyProfile')?.addEventListener('click', closeModal);
   modal.addEventListener('click', event => {
@@ -1047,6 +1088,7 @@ function initCompanyProfile() {
 
       renderCompany(result.data);
       showLogo(result.data.logo || '');
+      companyProfileNeedsCompletion = false;
       showToast('Perfil empresarial guardado correctamente');
       closeModal();
     } catch (error) {

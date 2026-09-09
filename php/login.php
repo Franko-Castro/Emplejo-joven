@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../config/conexion.php";
@@ -74,6 +74,7 @@ try {
     }
 
     // Iniciar sesión
+    session_regenerate_id(true);
     $_SESSION["id_usuario"] = (int)$user["id_usuario"];
     $_SESSION["correo"] = $correo;
     $_SESSION["tipo_usuario"] = $user["tipo_usuario"];

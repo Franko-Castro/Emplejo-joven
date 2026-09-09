@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../config/conexion.php";
@@ -97,7 +97,7 @@ try {
         $empresa = $stmt->fetch();
 
         if ($empresa) {
-            $fields = ['nombre_empresa', 'telefono', 'descripcion', 'id_categoria', 'logo'];
+            $fields = ['nombre_empresa', 'telefono', 'descripcion', 'id_categoria'];
             $filled = 0;
             foreach ($fields as $field) {
                 if (isset($empresa[$field]) && trim((string)$empresa[$field]) !== "") {

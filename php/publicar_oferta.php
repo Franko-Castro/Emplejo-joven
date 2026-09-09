@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../config/conexion.php";
@@ -51,6 +51,25 @@ try {
     if (!$empresa) {
         http_response_code(403);
         echo json_encode(["success" => false, "message" => "No encontramos el perfil de empresa"]);
+        exit;
+    }
+
+    $stmtPerfil = $conexion->prepare(
+                "SELECT e.nombre_empresa, e.telefono, e.descripcion, e.id_categoria
+                 FROM empresas e
+                 INNER JOIN usuarios u ON u.id_usuario = e.id_usuario
+                 WHERE e.id_usuario = :id_usuario
+           AND NULLIF(TRIM(e.nombre_empresa), '') IS NOT NULL
+           AND NULLIF(TRIM(e.telefono), '') IS NOT NULL
+           AND NULLIF(TRIM(e.descripcion), '') IS NOT NULL
+                     AND e.id_categoria IS NOT NULL
+                     AND NULLIF(TRIM(u.correo), '') IS NOT NULL
+         LIMIT 1"
+    );
+    $stmtPerfil->execute([":id_usuario" => $_SESSION["id_usuario"]]);
+    if (!$stmtPerfil->fetch()) {
+        http_response_code(403);
+        echo json_encode(["success" => false, "message" => "Completa los datos de tu empresa antes de publicar una vacante"]);
         exit;
     }
 

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 require_once "../config/conexion.php";
 
@@ -166,6 +166,28 @@ try {
             throw new InvalidArgumentException("La hoja de vida debe ser un archivo PDF, DOC o DOCX");
         }
 
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeCv = $finfo->file($_FILES["hoja_de_vida"]["tmp_name"]);
+        $contenidoCv = file_get_contents($_FILES["hoja_de_vida"]["tmp_name"]);
+        $contenidoValido = false;
+
+        if ($extensionOriginal === "pdf") {
+            $contenidoValido = $mimeCv === "application/pdf" && str_starts_with($contenidoCv, "%PDF-");
+        } elseif ($extensionOriginal === "doc") {
+            $contenidoValido = $mimeCv === "application/msword" && str_starts_with($contenidoCv, "\xD0\xCF\x11\xE0");
+        } elseif ($extensionOriginal === "docx" && $mimeCv === "application/zip" && class_exists("ZipArchive")) {
+            $zip = new ZipArchive();
+            if ($zip->open($_FILES["hoja_de_vida"]["tmp_name"]) === true) {
+                $contenidoValido = $zip->locateName("[Content_Types].xml") !== false
+                    && $zip->locateName("word/document.xml") !== false;
+                $zip->close();
+            }
+        }
+
+        if (!$contenidoValido) {
+            throw new InvalidArgumentException("El contenido de la hoja de vida no coincide con su extensión");
+        }
+
         $directorioCvs = "../uploads/hojas_vida";
         if (!is_dir($directorioCvs) && !mkdir($directorioCvs, 0755, true)) {
             throw new Exception("No se pudo preparar la carpeta para guardar la hoja de vida");
@@ -187,8 +209,7 @@ try {
             }
         }
 
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $tipoArchivo = $finfo->file($rutaDestinoCv) ?: "application/octet-stream";
+        $tipoArchivo = $mimeCv;
         $tamanoArchivo = (int)$_FILES["hoja_de_vida"]["size"];
 
         $nuevoCvGuardado = [

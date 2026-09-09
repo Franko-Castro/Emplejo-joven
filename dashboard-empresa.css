@@ -1573,6 +1573,16 @@ img { max-width: 100%; display: block; }
     padding: 18px 14px 90px;
   }
 
+  .dashboard-grid,
+  .candidates-area,
+  .vacancies-area,
+  .candidates-grid,
+  .vacancies-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .candidates-grid {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1580,6 +1590,8 @@ img { max-width: 100%; display: block; }
 
   .candidate-card {
     padding: 18px 16px;
+    width: 100%;
+    min-width: 0;
   }
 
   .candidate-header {
@@ -1621,6 +1633,8 @@ img { max-width: 100%; display: block; }
 
   .vacancies-header h2 {
     font-size: 16px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .vacancies-card,

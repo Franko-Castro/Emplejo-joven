@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/sesion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../config/conexion.php";
@@ -285,6 +285,7 @@ try {
     $conexion->commit();
 
     // Iniciar sesión automáticamente al registrarse
+    session_regenerate_id(true);
     $_SESSION["id_usuario"] = (int)$idUsuario;
     $_SESSION["correo"] = $correo;
     $_SESSION["tipo_usuario"] = $tipoUsuario;

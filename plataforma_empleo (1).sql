@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Aug 25, 2026 at 11:02 PM
+-- Generation Time: Sep 09, 2026 at 08:15 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -68,12 +68,12 @@ CREATE TABLE `empresas` (
   `fecha_actualizacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `empresas`
---
 
-INSERT INTO `empresas` (`id_empresa`, `id_usuario`, `nombre_empresa`, `telefono`, `descripcion`, `id_categoria`, `logo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(1, 2, 'pizzeriaFM', NULL, NULL, NULL, NULL, '2026-08-21 16:10:13', '2026-08-21 16:10:13');
+INSERT INTO `eventos` (`id_evento`, `id_usuario_creador`, `titulo`, `tipo_evento`, `descripcion`, `fecha_evento`, `modalidad`, `ubicacion_enlace`, `enlace_inscripcion`, `organizador`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 3, 'Cómo armar tu primer CV de alto impacto', 'Webinar Gratuito', 'Aprende las claves y secretos que buscan los reclutadores para destacar sin tener amplia experiencia previa.', '2026-09-07 20:36:15', 'virtual', 'https://meet.google.com/ejemplo-webinar', 'https://forms.gle/ejemplo-registro-cv', 'EmpleoJoven Talento', 1, '2026-09-04 20:36:15', '2026-09-04 21:22:30'),
+(2, 3, 'Expo Joven Talento 2026: Conexión con Startups', 'Feria de Empleo', 'Feria virtual interactiva donde más de 40 empresas tecnológicas y de servicios buscan jóvenes talentos para puestos junior y pasantías.', '2026-09-14 20:36:15', 'virtual', 'Plataforma Virtual EmpleoJoven', 'https://forms.gle/ejemplo-expo-2026', 'EmpleoJoven & Alianzas', 1, '2026-09-04 20:36:15', '2026-09-04 21:22:29'),
+(4, 1, 'Cómo armar tu primer CV de alto impacto', 'Webinar Gratuito', 'Aprende las claves para destacar frente a los reclutadores.', '2026-09-07 21:08:16', 'virtual', 'https://meet.google.com/ejemplo-webinar', 'https://forms.gle/ejemplo-registro-cv', 'EmpleoJoven Talento', 1, '2026-09-04 21:08:16', '2026-09-04 21:22:30'),
+(5, 1, 'Expo Joven Talento 2026', '', 'Conecta con empresas que buscan jóvenes talentos.', '2026-09-14 21:08:00', 'virtual', 'Plataforma Virtual EmpleoJoven', 'https://forms.gle/ejemplo-expo-2026', 'EmpleoJoven & Alianzas', 1, '2026-09-04 21:08:16', '2026-09-06 20:15:12');
 
 -- --------------------------------------------------------
 
@@ -92,6 +92,13 @@ CREATE TABLE `hojas_de_vida` (
   `fecha_carga` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_actualizacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `hojas_de_vida`
+--
+
+INSERT INTO `hojas_de_vida` (`id_hoja_vida`, `id_usuario`, `nombre_archivo`, `ruta_archivo`, `tipo_archivo`, `tamano_archivo`, `activa`, `fecha_carga`, `fecha_actualizacion`) VALUES
+(1, 1, 'certificado de base de datos.pdf', 'uploads/hojas_vida/cv_1_27fd388b06e3816d.pdf', 'application/pdf', 74605, 1, '2026-08-31 19:06:06', '2026-08-31 19:06:06');
 
 -- --------------------------------------------------------
 
@@ -119,7 +126,12 @@ CREATE TABLE `ofertas_laborales` (
 --
 
 INSERT INTO `ofertas_laborales` (`id_oferta`, `id_empresa`, `id_categoria`, `cargo`, `descripcion`, `experiencia_requerida`, `habilidades_requeridas`, `datos_contacto`, `estado`, `fecha_publicacion`, `fecha_actualizacion`, `fecha_cierre`) VALUES
-(1, 1, 9, 'empleada domestica', 'cvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvvcvcvcvcvvcvcvcvcvcvcvcvcvcvcvcvcvcvcv', 'mínimo 1 ano de experiencia', 'que se amable y ordenada', 'pizza10@gmail.com\n3107404575', 'activa', '2026-08-24 19:13:03', '2026-08-24 19:13:03', NULL);
+(1, 1, 9, 'empleada domestica', 'Desarrollé una plataforma web que fortaleció la presencia digital del\nrestaurante y facilitó la interacción con sus clientes.\nImplementé un sistema de reservas en línea para agilizar la gestión de\nmesas y mejorar la atención al cliente.\nDiseñé una experiencia de usuario moderna mediante un menú digital\ninteractivo, galería de imágenes y navegación intuitiva.\nIntegré un formulario de contacto con información del restaurante para\nfacilitar la comunicación con los clientes.\nOptimicé el sitio para dispositivos móviles y diferentes navegadores,\ngarantizando una experiencia de usuario consistente.\nParticipé en todas las etapas del proyecto, desde el análisis de\nrequerimientos y el diseño de la interfaz hasta el desarrollo, pruebas e\nimplementación\nHTML • CSS • JavaScript • PHP • MySQL', 'mínimo 1 ano de experiencia', 'que se amable y ordenada', 'pizza10@gmail.com\n3107404575', 'activa', '2026-08-24 19:13:03', '2026-09-01 10:17:51', NULL),
+(2, 1, 1, 'Técnico de sistemas', 'Desarrollé aplicaciones web enfocadas en mejorar la experiencia del\nusuario mediante interfaces intuitivas y responsivas.\nImplementé funcionalidades que optimizaron los procesos de gestión y\nadministración de información dentro de la plataforma.\nDiseñé e integré bases de datos relacionales, garantizando la integridad y\ndisponibilidad de los datos.\nIdentifiqué y solucioné incidencias técnicas, mejorando la estabilidad y el\nrendimiento de las aplicaciones.\nColaboré con diferentes áreas para analizar requerimientos y transformar\nnecesidades del negocio en soluciones de software eficientes.\nInvestigué e incorporé nuevas tecnologías y herramientas para optimizar\nel desarrollo y mantenimiento de los proyectos', 'sin experiencia', 'Educado, Solida Dario Respetuoso', '3226065720\nfm3949461@gmail.com', 'activa', '2026-09-01 10:10:52', '2026-09-01 10:47:13', NULL),
+(3, 1, 2, 'Aministradora', 'RAIOLA NETWORKS, S.L., con domicilio social en avda. de Magoi, 66, Semisótano Dcha., 27002 Lugo (Lugo), NIF.: B27453489 y con email info@raiolanetworks.es, es la Responsable de Tratamiento de los datos personales recabados. El tratamiento se realizará con la exclusiva finalidad de atender solicitudes de información basada en el interés legítimo, la ejecución de la contratación de servicios basado en esa contratación y la remisión de comunicaciones comerciales si has prestado tu consentimiento o, si eres cliente, y no te has opuesto a ello en cualquier momento. Dispones de derechos para acceder, rectificar y suprimir los datos, portabilidad de los datos, limitación u oposición a su tratamiento. Más información en nuestra Política de Privacidad.', '3 anos de experiencia', 'excel contabilidad', 'fmcomar14@gmail.com', 'activa', '2026-09-01 11:05:14', '2026-09-01 11:05:14', NULL),
+(4, 1, 9, 'Mesera', 'RAIOLA NETWORKS, S.L., con domicilio social en avda. de Magoi, 66, Semisótano Dcha., 27002 Lugo (Lugo), NIF.: B27453489 y con email info@raiolanetworks.es, es la Responsable de Tratamiento de los datos personales recabados. El tratamiento se realizará con la exclusiva finalidad de atender solicitudes de información basada en el interés legítimo, la ejecución de la contratación de servicios basado en esa contratación y la remisión de comunicaciones comerciales si has prestado tu consentimiento o, si eres cliente, y no te has opuesto a ello en cualquier momento. Dispones de derechos para acceder, rectificar y suprimir los datos, portabilidad de los datos, limitación u oposición a su tratamiento. Más información en nuestra Política de Privacidad.', 'sin experiencia', 'buena actitud', '3226065720\n info@raiolanetworks.es', 'activa', '2026-09-01 11:07:28', '2026-09-01 11:07:28', NULL),
+(5, 1, 7, 'lava platos', 'vbvbvbvbvbvbv', 'nimmguna', 'cualquieras', 'bgbgbgbgbgbgbgbgbgbgbg', 'activa', '2026-09-06 20:23:45', '2026-09-09 13:12:19', NULL),
+(6, 2, 3, 'Contadora', 'Explora 22.217 ilustraciones y gráficos vectoriales de stock sobre logos de zapatos libres de derechos o realiza una nueva búsqueda para encontrar más ...', 'Mima de dos anos', 'responsabilida,', '3107404775', 'activa', '2026-09-09 13:52:53', '2026-09-09 13:52:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -148,7 +160,8 @@ CREATE TABLE `perfil_personas` (
 --
 
 INSERT INTO `perfil_personas` (`id_perfil`, `id_usuario`, `nombre_completo`, `telefono`, `foto_perfil`, `cargo_profesion`, `id_categoria`, `cargo_interes`, `descripcion_profesional`, `experiencia`, `habilidades`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(1, 1, 'frank martinez', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-08-21 15:48:42', '2026-08-21 15:48:42');
+(1, 1, 'Frank Martínez', '3001234567', 'uploads/perfiles/postulante_1_c74a012eba404de0.jpg', 'Desarrollador Web', 1, 'Backend Developer', 'Experto en PHP y JavaScript', '5 años en proyectos de software', 'PHP, JS, SQL', '2026-08-21 15:48:42', '2026-09-08 20:38:03'),
+(2, 3, 'yosmany cordoba', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-09-04 20:08:34', '2026-09-04 20:08:34');
 
 -- --------------------------------------------------------
 
@@ -172,40 +185,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `correo`, `password_hash`, `tipo_usuario`, `correo_verificado`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(1, 'fm3949461@gmail.com', '$2y$10$B6g3hhMez0J.4Oz1aJg..eD0KbxzfVY/P01pK9nbARhMAeY3C50RO', 'persona', 0, 1, '2026-08-21 15:48:42', '2026-08-21 15:48:42'),
-(2, 'pizza10@gmail.com', '$2y$10$O3tNxIizP7J1khMZDr/wieJkkuAbJOOkvnqFb9R/CSUXemcmxFxK.', 'empresa', 0, 1, '2026-08-21 16:10:13', '2026-08-21 16:10:13'),
-(3, 'Yosmany123@hotmail.com', '$2b$10$XBgyl7xjjf5TcUS8ivcts.1cENrVPa8ygNF5uZgPbJnsdfjlhJaNO', 'admin', 1, 1, NOW(), NOW());
-
--- --------------------------------------------------------
-
---
--- Table structure for table `eventos`
---
-
-CREATE TABLE `eventos` (
-  `id_evento` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_usuario_creador` int UNSIGNED NOT NULL,
-  `titulo` varchar(200) NOT NULL,
-  `tipo_evento` varchar(100) NOT NULL DEFAULT 'Webinar Gratuito',
-  `descripcion` text NOT NULL,
-  `fecha_evento` datetime NOT NULL,
-  `modalidad` enum('virtual','presencial','hibrido') NOT NULL DEFAULT 'virtual',
-  `ubicacion_enlace` varchar(500) DEFAULT NULL,
-  `enlace_inscripcion` varchar(500) DEFAULT NULL,
-  `organizador` varchar(150) NOT NULL DEFAULT 'EmpleoJoven',
-  `activo` tinyint(1) NOT NULL DEFAULT '1',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_actualizacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_evento`),
-  KEY `idx_evento_fecha` (`fecha_evento`),
-  KEY `idx_evento_activo` (`activo`),
-  KEY `idx_evento_creador` (`id_usuario_creador`),
-  CONSTRAINT `fk_evento_usuario` FOREIGN KEY (`id_usuario_creador`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO `eventos` (`id_usuario_creador`, `titulo`, `tipo_evento`, `descripcion`, `fecha_evento`, `modalidad`, `ubicacion_enlace`, `enlace_inscripcion`, `organizador`, `activo`) VALUES
-(1, 'Cómo armar tu primer CV de alto impacto', 'Webinar Gratuito', 'Aprende las claves para destacar frente a los reclutadores.', DATE_ADD(NOW(), INTERVAL 3 DAY), 'virtual', 'https://meet.google.com/ejemplo-webinar', 'https://forms.gle/ejemplo-registro-cv', 'EmpleoJoven Talento', 1),
-(1, 'Expo Joven Talento 2026', 'Feria de Empleo', 'Conecta con empresas que buscan jóvenes talentos.', DATE_ADD(NOW(), INTERVAL 10 DAY), 'virtual', 'Plataforma Virtual EmpleoJoven', 'https://forms.gle/ejemplo-expo-2026', 'EmpleoJoven & Alianzas', 1);
+(1, 'fm3949461@gmail.com', '', 'persona', 0, 1, '2026-08-21 15:48:42', '2026-08-21 15:48:42'),
+(2, 'pizza10@gmail.com', '', 'empresa', 0, 1, '2026-08-21 16:10:13', '2026-09-04 20:14:00'),
+(3, 'Yosmany123@hotmail.com', '', 'admin', 0, 1, '2026-09-04 20:08:34', '2026-09-04 20:46:13'),
+(4, 'zapatos123@gmail.com', '', 'empresa', 0, 1, '2026-09-09 13:44:31', '2026-09-09 13:44:31');
 
 --
 -- Indexes for dumped tables
@@ -225,6 +208,15 @@ ALTER TABLE `empresas`
   ADD PRIMARY KEY (`id_empresa`),
   ADD UNIQUE KEY `id_usuario` (`id_usuario`),
   ADD KEY `idx_empresa_categoria` (`id_categoria`);
+
+--
+-- Indexes for table `eventos`
+--
+ALTER TABLE `eventos`
+  ADD PRIMARY KEY (`id_evento`),
+  ADD KEY `idx_evento_fecha` (`fecha_evento`),
+  ADD KEY `idx_evento_activo` (`activo`),
+  ADD KEY `fk_evento_usuario` (`id_usuario_creador`);
 
 --
 -- Indexes for table `hojas_de_vida`
@@ -274,62 +266,40 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT for table `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `id_empresa` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_empresa` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `eventos`
+--
+ALTER TABLE `eventos`
+  MODIFY `id_evento` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `hojas_de_vida`
 --
 ALTER TABLE `hojas_de_vida`
-  MODIFY `id_hoja_vida` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_hoja_vida` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `ofertas_laborales`
 --
 ALTER TABLE `ofertas_laborales`
-  MODIFY `id_oferta` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_oferta` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `perfil_personas`
 --
 ALTER TABLE `perfil_personas`
-  MODIFY `id_perfil` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_perfil` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_usuario` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- Constraints for dumped tables
---
-
---
--- Constraints for table `empresas`
---
-ALTER TABLE `empresas`
-  ADD CONSTRAINT `fk_empresa_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_empresa_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `hojas_de_vida`
---
-ALTER TABLE `hojas_de_vida`
-  ADD CONSTRAINT `fk_hoja_vida_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `ofertas_laborales`
---
-ALTER TABLE `ofertas_laborales`
-  ADD CONSTRAINT `fk_oferta_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_oferta_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresas` (`id_empresa`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `perfil_personas`
---
-ALTER TABLE `perfil_personas`
-  ADD CONSTRAINT `fk_perfil_persona_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_perfil_persona_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+-- Constraints removed intentionally.
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
