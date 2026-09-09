@@ -798,63 +798,6 @@ img {
   transform: translateX(3px);
 }
 
-/* ---- Social Login ---- */
-.social-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.social-divider::before,
-.social-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(189, 200, 209, 0.5);
-}
-
-.social-divider span {
-  font-size: 12px;
-  color: var(--on-surface-variant);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.social-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid rgba(189, 200, 209, 0.4);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--on-surface);
-  transition: all var(--transition-base);
-}
-
-.social-btn:hover {
-  background: white;
-  border-color: var(--outline-variant);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.social-btn svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
 /* ---- Auth Footer Link ---- */
 .auth-footer {
   text-align: center;
@@ -1950,61 +1893,6 @@ img {
   align-items: center;
   text-align: center;
   gap: 16px;
-}
-
-/* Lock icon */
-.rp-lock-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 20px rgba(0,101,141,0.3);
-}
-
-.rp-lock-icon .material-symbols-outlined {
-  font-size: 26px;
-  color: white;
-  font-variation-settings: 'FILL' 1;
-}
-
-.rp-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--on-surface);
-  margin: 0;
-}
-
-.rp-desc {
-  font-size: 14px;
-  color: var(--on-surface-variant);
-  line-height: 1.6;
-  margin: 0;
-  max-width: 380px;
-}
-
-/* Benefits list */
-.rp-benefits {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  text-align: left;
-  background: var(--surface-container-lowest);
-  border: 1px solid var(--outline-variant);
-  border-radius: 12px;
-  padding: 16px 18px;
-}
-
-.rp-benefit-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--on-surface);
 }
 
 .rp-benefit-item .material-symbols-outlined {
