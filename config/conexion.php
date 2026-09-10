@@ -1,10 +1,10 @@
 <?php
 
-$host = "127.0.0.1";
+$host = "sql111.infinityfree.com";
 $ports = ["3307", "3306"];
-$dbname = "plataforma_empleo";
-$username = "root";
-$password = "";
+$dbname = "if0_42877241_plataforma_empleo";
+$username = "if0_42877241";
+$password = "dTxjpEDYHfrrM";
 
 $conexion = null;
 $errorMsg = "";
@@ -35,4 +35,4 @@ if (!$conexion) {
         "message" => "Error de conexión con la base de datos: " . $errorMsg
     ]);
     exit;
-}
+}

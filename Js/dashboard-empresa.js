@@ -92,6 +92,24 @@ function renderCompany(company) {
 
 let loadedCandidates = [];
 let companyProfileNeedsCompletion = false;
+let categoriesPromise = null;
+let loadedVacancies = [];
+
+function getCompanyCategories() {
+  if (!categoriesPromise) {
+    categoriesPromise = fetch('php/categorias.php')
+      .then(async response => {
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'No fue posible cargar las categorías');
+        return result.data || [];
+      })
+      .catch(error => {
+        categoriesPromise = null;
+        throw error;
+      });
+  }
+  return categoriesPromise;
+}
 
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -200,15 +218,13 @@ function initCategoryFilter() {
 
 async function loadFilterPills(container) {
   try {
-    const response = await fetch('php/categorias.php');
-    const result = await response.json();
-    if (!response.ok || !result.success) throw new Error(result.message);
+    const categories = await getCompanyCategories();
 
     // Conservar el pill 'Todos' y añadir categorías dinámicas
     const existingPills = container.querySelectorAll('.pill:not([data-category="todos"])');
     existingPills.forEach(p => p.remove());
 
-    result.data.forEach(category => {
+    categories.forEach(category => {
       const pill = document.createElement('button');
       pill.type = 'button';
       pill.className = 'pill';
@@ -717,6 +733,7 @@ async function loadVacancies(includeAll = false) {
     if (!response.ok || !result.success) throw new Error(result.message);
 
     const vacancies = result.data;
+    loadedVacancies = vacancies;
     count.textContent = `${vacancies.length} ${includeAll ? 'Total' : 'Activas'}`;
 
     if (!vacancies.length) {
@@ -777,11 +794,9 @@ function initVacancyEditor() {
   };
 
   const loadCategories = async selectedId => {
-    const response = await fetch('php/categorias.php');
-    const result = await response.json();
-    if (!response.ok || !result.success) throw new Error(result.message);
+    const categories = await getCompanyCategories();
 
-    category.innerHTML = '<option value="">Selecciona una categoría</option>' + result.data.map(item =>
+    category.innerHTML = '<option value="">Selecciona una categoría</option>' + categories.map(item =>
       `<option value="${item.id_categoria}">${escapeHtml(item.nombre)}</option>`).join('');
     category.value = String(selectedId);
   };
@@ -819,11 +834,18 @@ function initVacancyEditor() {
     modal.setAttribute('aria-hidden', 'false');
 
     try {
-      const response = await fetch(`php/oferta_empresa.php?id=${encodeURIComponent(id)}`);
-      const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.message);
-
-      const vacancy = result.data;
+      const cachedVacancy = loadedVacancies.find(item => String(item.id_oferta) === String(id));
+      const [vacancy, categories] = await Promise.all([
+        cachedVacancy
+          ? Promise.resolve(cachedVacancy)
+          : fetch(`php/oferta_empresa.php?id=${encodeURIComponent(id)}`)
+            .then(async response => {
+              const result = await response.json();
+              if (!response.ok || !result.success) throw new Error(result.message);
+              return result.data;
+            }),
+        getCompanyCategories()
+      ]);
       document.getElementById('editVacancyId').value = vacancy.id_oferta;
       document.getElementById('editVacancyCargo').value = vacancy.cargo || '';
       document.getElementById('editVacancyDescription').value = vacancy.descripcion || '';
@@ -832,7 +854,9 @@ function initVacancyEditor() {
       document.getElementById('editVacancyContact').value = vacancy.datos_contacto || '';
       document.getElementById('editVacancyStatus').value = vacancy.estado;
       closeBtn.hidden = vacancy.estado === 'cerrada';
-      await loadCategories(vacancy.id_categoria);
+      category.innerHTML = '<option value="">Selecciona una categoría</option>' + categories.map(item =>
+        `<option value="${item.id_categoria}">${escapeHtml(item.nombre)}</option>`).join('');
+      category.value = String(vacancy.id_categoria);
     } catch (error) {
       closeModal();
       showToast(error.message || 'No fue posible cargar la vacante', 'error');
@@ -881,6 +905,14 @@ function initPublishJob() {
   };
 
   const handlePublish = async () => {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.getElementById('jobTitle')?.focus();
+
+    const categoriesRequest = categorySelect.dataset.loaded
+      ? Promise.resolve(null)
+      : getCompanyCategories().then(data => ({ data }));
+
     try {
       const profileResponse = await fetch('php/perfil_empresa.php');
       const profileResult = await profileResponse.json();
@@ -892,27 +924,23 @@ function initPublishJob() {
         && profile.id_categoria;
 
       if (!profileResponse.ok || !profileResult.success || !profileComplete) {
+        closeModal();
         showToast('Completa los datos de tu empresa antes de publicar una vacante', 'error');
         document.getElementById('companyProfileBtn')?.click();
         return;
       }
     } catch (error) {
       showToast('No fue posible verificar los datos de tu empresa', 'error');
+      closeModal();
       return;
     }
 
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.getElementById('jobTitle')?.focus();
-
-    if (categorySelect.dataset.loaded) return;
-
     try {
-      const response = await fetch('php/categorias.php');
-      const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.message);
+      if (categorySelect.dataset.loaded) return;
+      const categories = await categoriesRequest;
+      const data = categories.data;
 
-      categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + result.data.map(category =>
+      categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + data.map(category =>
         `<option value="${category.id_categoria}">${escapeHtml(category.nombre)}</option>`
       ).join('');
       categorySelect.dataset.loaded = 'true';
@@ -1013,11 +1041,9 @@ function initCompanyProfile() {
   };
 
   const loadCategories = async selectedId => {
-    const response = await fetch('php/categorias.php');
-    const result = await response.json();
-    if (!response.ok || !result.success) throw new Error(result.message || 'No fue posible cargar las categorías');
+    const categories = await getCompanyCategories();
 
-    categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + result.data.map(category =>
+    categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + categories.map(category =>
       `<option value="${category.id_categoria}">${escapeHtml(category.nombre)}</option>`).join('');
     categorySelect.value = String(selectedId || '');
   };
@@ -1028,7 +1054,10 @@ function initCompanyProfile() {
     modal.setAttribute('aria-hidden', 'false');
 
     try {
-      const response = await fetch('php/perfil_empresa.php');
+      const [response, categories] = await Promise.all([
+        fetch('php/perfil_empresa.php'),
+        getCompanyCategories()
+      ]);
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.message);
 
@@ -1038,7 +1067,9 @@ function initCompanyProfile() {
       document.getElementById('profileCompanyPhone').value = profile.telefono || '';
       document.getElementById('profileCompanyDescription').value = profile.descripcion || '';
       showLogo(profile.logo || '');
-      await loadCategories(profile.id_categoria);
+      categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + categories.map(category =>
+        `<option value="${category.id_categoria}">${escapeHtml(category.nombre)}</option>`).join('');
+      categorySelect.value = String(profile.id_categoria || '');
     } catch (error) {
       showToast(error.message || 'No fue posible cargar el perfil', 'error');
     }

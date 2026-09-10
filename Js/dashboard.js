@@ -343,27 +343,13 @@ function toggleSavedJob(jobId) {
 
 function initSavedJobsInteractions() {
   const sidebarSavedBtn = document.getElementById('sidebarSavedBtn');
+  const sidebarHomeBtn = document.getElementById('sidebarHomeBtn');
   const bottomJobsBtn = document.getElementById('bottomJobsBtn');
   const topbarJobsBtn = document.getElementById('topbarJobsBtn');
   const topbarHomeBtn = document.getElementById('topbarHomeBtn');
+  const bottomHomeBtn = document.getElementById('bottomHomeBtn');
 
-  sidebarSavedBtn?.addEventListener('click', (event) => {
-    event.preventDefault();
-    savedJobsOnly = true;
-    jobsGroupedByCategory = false;
-    renderAvailableVacancies(currentVacancies, true, false);
-  });
-
-  const showJobsView = (event, grouped = false) => {
-    event.preventDefault();
-    savedJobsOnly = false;
-    jobsGroupedByCategory = grouped;
-    renderAvailableVacancies(currentVacancies, false, grouped);
-  };
-
-  bottomJobsBtn?.addEventListener('click', (event) => showJobsView(event, true));
-  topbarJobsBtn?.addEventListener('click', (event) => showJobsView(event, true));
-  topbarHomeBtn?.addEventListener('click', (event) => {
+  const showHomeView = (event) => {
     event.preventDefault();
     savedJobsOnly = false;
     jobsGroupedByCategory = false;
@@ -371,7 +357,38 @@ function initSavedJobsInteractions() {
     if (globalSearch) globalSearch.value = '';
     renderAvailableVacancies(currentVacancies, false, false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  sidebarSavedBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    savedJobsOnly = true;
+    jobsGroupedByCategory = false;
+    const jobList = document.getElementById('jobList');
+    if (!currentVacancies.length && jobList) {
+      jobList.innerHTML = '<div class="jobs-loading"><span class="material-symbols-outlined">sync</span><p>Cargando empleos guardados...</p></div>';
+      await loadAvailableVacancies();
+    }
+    renderAvailableVacancies(currentVacancies, true, false);
   });
+
+  const showJobsView = async (event, grouped = false) => {
+    event.preventDefault();
+    savedJobsOnly = false;
+    jobsGroupedByCategory = grouped;
+
+    const jobList = document.getElementById('jobList');
+    if (!currentVacancies.length && jobList) {
+      jobList.innerHTML = '<div class="jobs-loading"><span class="material-symbols-outlined">sync</span><p>Cargando empleos...</p></div>';
+      await loadAvailableVacancies();
+    }
+    renderAvailableVacancies(currentVacancies, false, grouped);
+  };
+
+  bottomJobsBtn?.addEventListener('click', (event) => showJobsView(event, true));
+  topbarJobsBtn?.addEventListener('click', (event) => showJobsView(event, true));
+  sidebarHomeBtn?.addEventListener('click', showHomeView);
+  bottomHomeBtn?.addEventListener('click', showHomeView);
+  topbarHomeBtn?.addEventListener('click', showHomeView);
 }
 
 function renderAvailableVacancies(vacancies, onlySaved = false, groupByCategory = false) {
@@ -816,15 +833,23 @@ async function openApplicantProfileModal(focusCv = false) {
   const modal = document.getElementById('applicantProfileModal');
   if (!modal) return;
 
-  // Cargar categorías
-  await loadCategoriesIntoSelect();
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
 
-  // Cargar datos actuales desde el backend
+  const profileForm = document.getElementById('applicantProfileForm');
+  const profileSubmit = document.getElementById('saveApplicantProfile');
+  profileForm?.setAttribute('aria-busy', 'true');
+  if (profileSubmit) profileSubmit.disabled = true;
+
   try {
-    const res = await fetch('php/perfil_postulante.php');
-    const result = await res.json();
+    const [profileResponse] = await Promise.all([
+      fetch('php/perfil_postulante.php'),
+      loadCategoriesIntoSelect()
+    ]);
+    const result = await profileResponse.json();
 
-    if (res.ok && result.success && result.data) {
+    if (profileResponse.ok && result.success && result.data) {
       const p = result.data;
       
       const fullName = document.getElementById('profileFullName');
@@ -876,11 +901,10 @@ async function openApplicantProfileModal(focusCv = false) {
     }
   } catch (err) {
     console.error('Error cargando datos del perfil:', err);
+  } finally {
+    profileForm?.removeAttribute('aria-busy');
+    if (profileSubmit) profileSubmit.disabled = false;
   }
-
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
 
   if (focusCv) {
     setTimeout(() => {

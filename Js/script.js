@@ -772,10 +772,26 @@ function initHeroCarousel() {
   const slides = document.querySelectorAll('.hero-slide');
   if (slides.length <= 1) return;
 
+  const loadSlide = slide => {
+    if (!slide || slide.dataset.loaded === 'true') return;
+    const imageUrl = slide.dataset.background;
+    if (!imageUrl) {
+      slide.dataset.loaded = 'true';
+      return;
+    }
+    slide.style.backgroundImage = `url('${imageUrl}')`;
+    slide.dataset.loaded = 'true';
+  };
+
+  loadSlide(slides[0]);
+  loadSlide(slides[1]);
+
   let currentIndex = 0;
   setInterval(() => {
     slides[currentIndex].classList.remove('active');
     currentIndex = (currentIndex + 1) % slides.length;
+    loadSlide(slides[currentIndex]);
+    loadSlide(slides[(currentIndex + 1) % slides.length]);
     slides[currentIndex].classList.add('active');
   }, 6000);
 }
