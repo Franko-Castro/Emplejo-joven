@@ -1061,17 +1061,10 @@ function initLogout() {
   document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('php/logout.php', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        showToast('Sesión de administración cerrada', 'success');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1200);
-      }
+      await fetch('php/logout.php', { method: 'POST', cache: 'no-store' });
     } catch {
-      window.location.href = 'index.html';
     }
+    window.location.replace(new URL('index.html', document.baseURI).href);
   });
 }
 

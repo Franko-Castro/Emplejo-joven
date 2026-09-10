@@ -766,32 +766,75 @@ window.addEventListener('scroll', () => {
 
 /* ============================================
    HERO BACKGROUND CAROUSEL
+   Precarga las imágenes siguientes en segundo plano antes de
+   activarlas para evitar parpadeos durante la transición.
    ============================================ */
 
 function initHeroCarousel() {
-  const slides = document.querySelectorAll('.hero-slide');
+  const slides = Array.from(document.querySelectorAll('.hero-slide'));
   if (slides.length <= 1) return;
 
-  const loadSlide = slide => {
-    if (!slide || slide.dataset.loaded === 'true') return;
-    const imageUrl = slide.dataset.background;
-    if (!imageUrl) {
-      slide.dataset.loaded = 'true';
+  const preloadImage = url => new Promise(resolve => {
+    if (!url) {
+      resolve();
       return;
     }
-    slide.style.backgroundImage = `url('${imageUrl}')`;
-    slide.dataset.loaded = 'true';
+
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = url;
+  });
+
+  const applySlideBackground = slide => {
+    if (!slide) return;
+    const url = slide.dataset.background;
+    if (!url) return;
+    if (!slide.style.backgroundImage || slide.style.backgroundImage === 'none') {
+      slide.style.backgroundImage = `url('${url}')`;
+    }
   };
 
-  loadSlide(slides[0]);
-  loadSlide(slides[1]);
-
   let currentIndex = 0;
+  let isAnimating = false;
+
+  const activateSlide = index => {
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle('active', slideIndex === index);
+    });
+    currentIndex = index;
+  };
+
+  // Inicializa cada slide con su imagen para que no queden ocultas por falta de background.
+  slides.forEach((slide, index) => {
+    const url = slide.dataset.background;
+    if (url) {
+      applySlideBackground(slide);
+      preloadImage(url).then(() => {
+        slide.style.backgroundImage = `url('${url}')`;
+      });
+    }
+
+    slide.classList.toggle('active', index === 0);
+  });
+
   setInterval(() => {
-    slides[currentIndex].classList.remove('active');
-    currentIndex = (currentIndex + 1) % slides.length;
-    loadSlide(slides[currentIndex]);
-    loadSlide(slides[(currentIndex + 1) % slides.length]);
-    slides[currentIndex].classList.add('active');
-  }, 6000);
+    if (isAnimating) return;
+
+    isAnimating = true;
+    const nextIndex = (currentIndex + 1) % slides.length;
+    const nextSlide = slides[nextIndex];
+
+    if (nextSlide?.dataset?.background) {
+      applySlideBackground(nextSlide);
+      preloadImage(nextSlide.dataset.background).then(() => {
+        activateSlide(nextIndex);
+        setTimeout(() => { isAnimating = false; }, 1200);
+      });
+      return;
+    }
+
+    activateSlide(nextIndex);
+    setTimeout(() => { isAnimating = false; }, 1200);
+  }, 5000);
 }

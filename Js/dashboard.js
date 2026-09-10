@@ -9,6 +9,10 @@ let currentUserData = null;
 let savedJobsOnly = false;
 let jobsGroupedByCategory = false;
 
+// Cache de datos de perfil y categorías para evitar peticiones repetidas
+let _cachedProfileData = null;
+let _cachedCategories = null;
+
 const SAVED_JOBS_KEY = 'empleos_guardados';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -64,7 +68,7 @@ async function initEvents() {
     <p class="event-date-label">${formatEventDate(event.fecha_evento)} · ${event.modalidad}</p>
     <h4>${escapeHtml(event.titulo)}</h4><p>${escapeHtml(event.descripcion)}</p>
     ${detailed ? `<p><strong>Organiza:</strong> ${escapeHtml(event.organizador || 'EmpleoJoven')}</p>` : ''}
-    ${event.enlace_inscripcion ? `<a class="event-calendar-link" href="${escapeAttr(event.enlace_inscripcion)}" target="_blank" rel="noopener">Inscribirme</a>` : ''}
+    ${!detailed && event.enlace_inscripcion ? `<a class="event-calendar-link" href="${escapeAttr(event.enlace_inscripcion)}" target="_blank" rel="noopener">Inscribirme</a>` : ''}
   </article>`;
 
   try {
@@ -160,20 +164,11 @@ function initLogoutButton() {
  */
 async function logout() {
   try {
-    const res = await fetch('php/logout.php', { method: 'POST' });
-    const data = await res.json();
-    if (data.success) {
-      showToast('Sesión cerrada. Redirigiendo...', 'success');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1200);
-    } else {
-      showToast('Error al cerrar sesión', 'error');
-    }
+    await fetch('php/logout.php', { method: 'POST', cache: 'no-store' });
   } catch (err) {
     console.error('Error al cerrar sesión:', err);
-    showToast('Error de conexión con el servidor', 'error');
   }
+  window.location.replace(new URL('index.html', document.baseURI).href);
 }
 
 /* ============================================
@@ -776,6 +771,9 @@ function initProfileModal() {
 
         showToast(result.message || 'Perfil actualizado exitosamente', 'success');
 
+        // Invalidar caché para forzar recarga en la próxima apertura
+        _cachedProfileData = null;
+
         // Actualizar datos locales y UI
         if (result.data) {
           renderUser({
@@ -803,19 +801,25 @@ function initProfileModal() {
 }
 
 /**
- * Carga categorías en el selector de perfil
+ * Carga categorías en el selector de perfil (con caché en memoria)
  */
 async function loadCategoriesIntoSelect() {
   const select = document.getElementById('profileCategory');
   if (!select) return;
 
   try {
-    const res = await fetch('php/categorias.php');
-    const data = await res.json();
-    if (data.success && Array.isArray(data.data)) {
+    // Usar categorías cacheadas si ya están disponibles
+    if (!_cachedCategories) {
+      const res = await fetch('php/categorias.php');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        _cachedCategories = data.data;
+      }
+    }
+    if (_cachedCategories) {
       const currentValue = select.dataset.selected || '';
       select.innerHTML = '<option value="">Selecciona tu área o sector...</option>' +
-        data.data.map(cat => `
+        _cachedCategories.map(cat => `
           <option value="${cat.id_categoria}" ${String(cat.id_categoria) === String(currentValue) ? 'selected' : ''}>
             ${escapeHtml(cat.nombre)}
           </option>
@@ -827,7 +831,47 @@ async function loadCategoriesIntoSelect() {
 }
 
 /**
- * Abre y rellena el modal de edición de perfil
+ * Rellena los campos del formulario de perfil con los datos dados.
+ */
+function _fillProfileForm(p) {
+  const fallbackPhoto = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGF39068ZsKH6PfCL0I-mj6qbC3hf9i3RVeP6zlkZcmeWG7_3hIdqrhdgKs9oj85-hgT4JHFEElJ0qHB9MalbICxMd0tPVzerCrXFk0ZJT9XVP-1cIE4gpZnUZP4p0yeUNU3zuMysW8andOrZAeYrrw30nULtU6TPsHAKCmj_ttyIGYZb-gn_dzGBDUg-nF0bL0rCgH9Am2qrrZESTKlK5drdCQPycZLMmLp_JcBy-VfViJaP6PXWg';
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('profileFullName', p.nombre_completo);
+  set('profileEmail', p.correo);
+  set('profilePhone', p.telefono);
+  set('profileJobProfession', p.cargo_profesion);
+  set('profileTargetRole', p.cargo_interes);
+  set('profileDescription', p.descripcion_profesional);
+  set('profileExperience', p.experiencia);
+  set('profileSkills', p.habilidades);
+
+  const category = document.getElementById('profileCategory');
+  if (category && p.id_categoria) {
+    category.dataset.selected = p.id_categoria;
+    category.value = p.id_categoria;
+  }
+
+  const photoPreview = document.getElementById('profilePhotoPreview');
+  const photoLabel = document.getElementById('profilePhotoLabel');
+  if (photoPreview) photoPreview.src = p.foto_perfil || fallbackPhoto;
+  if (photoLabel) photoLabel.textContent = p.foto_perfil ? 'Foto de perfil actual.' : 'Sin foto personalizada aún.';
+
+  const cvContainer = document.getElementById('currentCvContainer');
+  const cvName = document.getElementById('currentCvName');
+  const cvLink = document.getElementById('currentCvLink');
+  if (p.cv_nombre && p.cv_ruta) {
+    if (cvContainer) cvContainer.style.display = 'flex';
+    if (cvName) cvName.textContent = p.cv_nombre;
+    if (cvLink) cvLink.href = p.cv_ruta;
+  } else {
+    if (cvContainer) cvContainer.style.display = 'none';
+  }
+}
+
+/**
+ * Abre y rellena el modal de edición de perfil.
+ * Usa caché en memoria para que reabrirlo sea instantáneo.
  */
 async function openApplicantProfileModal(focusCv = false) {
   const modal = document.getElementById('applicantProfileModal');
@@ -839,71 +883,34 @@ async function openApplicantProfileModal(focusCv = false) {
 
   const profileForm = document.getElementById('applicantProfileForm');
   const profileSubmit = document.getElementById('saveApplicantProfile');
-  profileForm?.setAttribute('aria-busy', 'true');
-  if (profileSubmit) profileSubmit.disabled = true;
 
-  try {
-    const [profileResponse] = await Promise.all([
-      fetch('php/perfil_postulante.php'),
-      loadCategoriesIntoSelect()
-    ]);
-    const result = await profileResponse.json();
+  // Si ya tenemos datos en caché, rellenar inmediatamente sin deshabilitar el botón
+  if (_cachedProfileData) {
+    _fillProfileForm(_cachedProfileData);
+    // Actualizar categorías si ya están cacheadas (sin petición de red)
+    loadCategoriesIntoSelect();
+  } else {
+    // Primera vez: deshabilitar el formulario mientras carga
+    profileForm?.setAttribute('aria-busy', 'true');
+    if (profileSubmit) profileSubmit.disabled = true;
 
-    if (profileResponse.ok && result.success && result.data) {
-      const p = result.data;
-      
-      const fullName = document.getElementById('profileFullName');
-      const email = document.getElementById('profileEmail');
-      const phone = document.getElementById('profilePhone');
-      const jobProfession = document.getElementById('profileJobProfession');
-      const category = document.getElementById('profileCategory');
-      const targetRole = document.getElementById('profileTargetRole');
-      const desc = document.getElementById('profileDescription');
-      const exp = document.getElementById('profileExperience');
-      const skills = document.getElementById('profileSkills');
-      const photoPreview = document.getElementById('profilePhotoPreview');
-      const photoLabel = document.getElementById('profilePhotoLabel');
+    try {
+      const [profileResponse] = await Promise.all([
+        fetch('php/perfil_postulante.php'),
+        loadCategoriesIntoSelect()
+      ]);
+      const result = await profileResponse.json();
 
-      if (fullName) fullName.value = p.nombre_completo || '';
-      if (email) email.value = p.correo || '';
-      if (phone) phone.value = p.telefono || '';
-      if (jobProfession) jobProfession.value = p.cargo_profesion || '';
-      if (category && p.id_categoria) {
-        category.dataset.selected = p.id_categoria;
-        category.value = p.id_categoria;
+      if (profileResponse.ok && result.success && result.data) {
+        _cachedProfileData = result.data;   // Guardar en caché
+        _fillProfileForm(result.data);
       }
-      if (targetRole) targetRole.value = p.cargo_interes || '';
-      if (desc) desc.value = p.descripcion_profesional || '';
-      if (exp) exp.value = p.experiencia || '';
-      if (skills) skills.value = p.habilidades || '';
-
-      const fallbackPhoto = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGF39068ZsKH6PfCL0I-mj6qbC3hf9i3RVeP6zlkZcmeWG7_3hIdqrhdgKs9oj85-hgT4JHFEElJ0qHB9MalbICxMd0tPVzerCrXFk0ZJT9XVP-1cIE4gpZnUZP4p0yeUNU3zuMysW8andOrZAeYrrw30nULtU6TPsHAKCmj_ttyIGYZb-gn_dzGBDUg-nF0bL0rCgH9Am2qrrZESTKlK5drdCQPycZLMmLp_JcBy-VfViJaP6PXWg';
-      
-      if (photoPreview) {
-        photoPreview.src = p.foto_perfil || fallbackPhoto;
-      }
-      if (photoLabel) {
-        photoLabel.textContent = p.foto_perfil ? 'Foto de perfil actual.' : 'Sin foto personalizada aún.';
-      }
-
-      // Hoja de Vida
-      const cvContainer = document.getElementById('currentCvContainer');
-      const cvName = document.getElementById('currentCvName');
-      const cvLink = document.getElementById('currentCvLink');
-
-      if (p.cv_nombre && p.cv_ruta) {
-        if (cvContainer) cvContainer.style.display = 'flex';
-        if (cvName) cvName.textContent = p.cv_nombre;
-        if (cvLink) cvLink.href = p.cv_ruta;
-      } else {
-        if (cvContainer) cvContainer.style.display = 'none';
-      }
+    } catch (err) {
+      console.error('Error cargando datos del perfil:', err);
+    } finally {
+      profileForm?.removeAttribute('aria-busy');
+      if (profileSubmit) profileSubmit.disabled = false;
     }
-  } catch (err) {
-    console.error('Error cargando datos del perfil:', err);
-  } finally {
-    profileForm?.removeAttribute('aria-busy');
-    if (profileSubmit) profileSubmit.disabled = false;
   }
 
   if (focusCv) {

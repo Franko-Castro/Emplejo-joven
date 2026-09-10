@@ -95,6 +95,9 @@ let companyProfileNeedsCompletion = false;
 let categoriesPromise = null;
 let loadedVacancies = [];
 
+// Caché del perfil de empresa para que reabrir el modal sea instantáneo
+let _cachedCompanyProfile = null;
+
 function getCompanyCategories() {
   if (!categoriesPromise) {
     categoriesPromise = fetch('php/categorias.php')
@@ -1053,6 +1056,22 @@ function initCompanyProfile() {
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
 
+    // Si ya tenemos datos en caché, rellenar inmediatamente
+    if (_cachedCompanyProfile) {
+      const profile = _cachedCompanyProfile;
+      document.getElementById('profileCompanyName').value = profile.nombre_empresa || '';
+      document.getElementById('profileCompanyEmail').value = profile.correo || '';
+      document.getElementById('profileCompanyPhone').value = profile.telefono || '';
+      document.getElementById('profileCompanyDescription').value = profile.descripcion || '';
+      showLogo(profile.logo || '');
+      // Categorías ya vienen cacheadas por getCompanyCategories()
+      const categories = await getCompanyCategories();
+      categorySelect.innerHTML = '<option value="">Selecciona una categoría</option>' + categories.map(category =>
+        `<option value="${category.id_categoria}">${escapeHtml(category.nombre)}</option>`).join('');
+      categorySelect.value = String(profile.id_categoria || '');
+      return;
+    }
+
     try {
       const [response, categories] = await Promise.all([
         fetch('php/perfil_empresa.php'),
@@ -1062,6 +1081,7 @@ function initCompanyProfile() {
       if (!response.ok || !result.success) throw new Error(result.message);
 
       const profile = result.data;
+      _cachedCompanyProfile = profile;  // Guardar en caché
       document.getElementById('profileCompanyName').value = profile.nombre_empresa || '';
       document.getElementById('profileCompanyEmail').value = profile.correo || '';
       document.getElementById('profileCompanyPhone').value = profile.telefono || '';
@@ -1120,6 +1140,7 @@ function initCompanyProfile() {
       renderCompany(result.data);
       showLogo(result.data.logo || '');
       companyProfileNeedsCompletion = false;
+      _cachedCompanyProfile = null;  // Invalidar caché para forzar recarga fresca
       showToast('Perfil empresarial guardado correctamente');
       closeModal();
     } catch (error) {
@@ -1212,22 +1233,11 @@ function showToast(message, type = 'success') {
 
 async function logout() {
   try {
-    const res = await fetch('php/logout.php', { method: 'POST' });
-    const data = await res.json();
-
-    if (!data.success) {
-      showToast(data.message || 'No fue posible cerrar sesión', 'error');
-      return;
-    }
-
-    showToast('Sesión cerrada. Redirigiendo...');
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1200);
+    await fetch('php/logout.php', { method: 'POST', cache: 'no-store' });
   } catch (err) {
     console.error('Error al cerrar sesión:', err);
-    showToast('Error de conexión con el servidor', 'error');
   }
+  window.location.replace(new URL('index.html', document.baseURI).href);
 }
 
 function initLogout() {
