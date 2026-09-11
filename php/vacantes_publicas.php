@@ -4,7 +4,10 @@ header("Access-Control-Allow-Origin: *");
 require_once "../config/conexion.php";
 
 try {
-    $limit = isset($_GET["limit"]) ? max(1, min(12, (int)$_GET["limit"])) : 6;
+    $limitParam = $_GET["limit"] ?? "6";
+    $showAll = $limitParam === "all";
+    $limit = max(1, min(100, (int)$limitParam));
+    $limitSql = $showAll ? "" : " LIMIT :limit";
 
     $stmt = $conexion->prepare(
         "SELECT o.id_oferta,
@@ -18,10 +21,11 @@ try {
          INNER JOIN empresas e ON e.id_empresa = o.id_empresa
          INNER JOIN categorias c ON c.id_categoria = o.id_categoria
          WHERE o.estado = 'activa'
-         ORDER BY o.fecha_publicacion DESC
-         LIMIT :limit"
+            ORDER BY o.fecha_publicacion DESC$limitSql"
     );
-    $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+        if (!$showAll) {
+           $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+        }
     $stmt->execute();
 
     $vacantes = $stmt->fetchAll(PDO::FETCH_ASSOC);

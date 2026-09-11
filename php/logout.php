@@ -14,6 +14,11 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: ../index.html", true, 303);
+    exit;
+}
+
 echo json_encode([
     "success" => true,
     "message" => "Sesión cerrada correctamente"

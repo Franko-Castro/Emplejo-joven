@@ -130,8 +130,27 @@ async function initFeaturedJobs() {
   const skeletonGrid = document.getElementById('jobsSkeletonGrid');
   const jobsGrid     = document.getElementById('jobsGrid');
   const noJobsMsg    = document.getElementById('noJobsMessage');
+  const seeAllButtons = [
+    document.getElementById('verTodasBtn'),
+    document.getElementById('verTodasMobileBtn')
+  ].filter(Boolean);
 
   if (!jobsGrid) return;
+
+  const attachJobListeners = () => {
+    jobsGrid.querySelectorAll('.job-btn-apply').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.job-card');
+        openRegisterPrompt(card?.dataset.title || '—', card?.dataset.company || '—');
+      });
+    });
+  };
+
+  const renderJobs = jobs => {
+    jobsGrid.innerHTML = jobs.map((job, index) => buildJobCard(job, index)).join('');
+    jobsGrid.hidden = false;
+    attachJobListeners();
+  };
 
   try {
     const res  = await fetch('php/vacantes_publicas.php?limit=6');
@@ -145,9 +164,8 @@ async function initFeaturedJobs() {
       return;
     }
 
-    // Renderizar tarjetas
-    jobsGrid.innerHTML = json.data.map((job, i) => buildJobCard(job, i)).join('');
-    jobsGrid.hidden = false;
+    // Renderizar las seis vacantes destacadas.
+    renderJobs(json.data);
 
     // Activar reveal
     requestAnimationFrame(() => {
@@ -164,13 +182,32 @@ async function initFeaturedJobs() {
       });
     });
 
-    // Attach click listeners for register prompt
-    jobsGrid.querySelectorAll('.job-btn-apply').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card    = btn.closest('.job-card');
-        const title   = card?.dataset.title   || '—';
-        const company = card?.dataset.company || '—';
-        openRegisterPrompt(title, company);
+    let allJobsLoaded = false;
+    seeAllButtons.forEach(button => {
+      button.addEventListener('click', async event => {
+        event.preventDefault();
+        if (allJobsLoaded) {
+          jobsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+
+        button.setAttribute('aria-busy', 'true');
+        try {
+          const allResponse = await fetch('php/vacantes_publicas.php?limit=all');
+          const allResult = await allResponse.json();
+          if (!allResponse.ok || !allResult.success) throw new Error(allResult.message);
+          renderJobs(allResult.data || []);
+          allJobsLoaded = true;
+          seeAllButtons.forEach(link => {
+            link.textContent = 'Mostrando todas las vacantes';
+            link.classList.add('is-loaded');
+          });
+        } catch (error) {
+          console.error('[AllJobs]', error);
+        } finally {
+          button.removeAttribute('aria-busy');
+        }
+        jobsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
 
@@ -383,14 +420,6 @@ function initRegisterPromptModal() {
   document.getElementById('rpRegisterBtn')?.addEventListener('click', () => scrollToHero('register'));
   document.getElementById('rpLoginBtn')?.addEventListener('click',   () => scrollToHero('login'));
 
-  // "Ver todas" buttons scroll to hero and open register tab
-  ['verTodasBtn', 'verTodasMobileBtn'].forEach(id => {
-    document.getElementById(id)?.addEventListener('click', (e) => {
-      e.preventDefault();
-      scrollToHero('register');
-    });
-  });
-
   // Navigation, mobile menu and footer registration links
   document.getElementById('navRegisterBtn')?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -580,7 +609,7 @@ function initForms() {
         if (submitBtn) submitBtn.disabled = false;
         if (data.success) {
           showToast('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
-          setTimeout(() => {
+          const redirectAfterLogin = () => {
             const loggedRole = data.data?.tipo_usuario || (role === 'joven' ? 'persona' : 'empresa');
             if (loggedRole === 'admin') {
               window.location.href = 'dashboard-admin.html';
@@ -589,7 +618,9 @@ function initForms() {
             } else {
               window.location.href = 'dashboard-empresa.html';
             }
-          }, 1500);
+          };
+
+          redirectAfterLogin();
         } else {
           showToast(data.message || 'Error al iniciar sesión', 'error');
         }
@@ -774,29 +805,7 @@ function initHeroCarousel() {
   const slides = Array.from(document.querySelectorAll('.hero-slide'));
   if (slides.length <= 1) return;
 
-  const preloadImage = url => new Promise(resolve => {
-    if (!url) {
-      resolve();
-      return;
-    }
-
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => resolve();
-    img.src = url;
-  });
-
-  const applySlideBackground = slide => {
-    if (!slide) return;
-    const url = slide.dataset.background;
-    if (!url) return;
-    if (!slide.style.backgroundImage || slide.style.backgroundImage === 'none') {
-      slide.style.backgroundImage = `url('${url}')`;
-    }
-  };
-
   let currentIndex = 0;
-  let isAnimating = false;
 
   const activateSlide = index => {
     slides.forEach((slide, slideIndex) => {
@@ -805,36 +814,9 @@ function initHeroCarousel() {
     currentIndex = index;
   };
 
-  // Inicializa cada slide con su imagen para que no queden ocultas por falta de background.
-  slides.forEach((slide, index) => {
-    const url = slide.dataset.background;
-    if (url) {
-      applySlideBackground(slide);
-      preloadImage(url).then(() => {
-        slide.style.backgroundImage = `url('${url}')`;
-      });
-    }
-
-    slide.classList.toggle('active', index === 0);
-  });
+  activateSlide(0);
 
   setInterval(() => {
-    if (isAnimating) return;
-
-    isAnimating = true;
-    const nextIndex = (currentIndex + 1) % slides.length;
-    const nextSlide = slides[nextIndex];
-
-    if (nextSlide?.dataset?.background) {
-      applySlideBackground(nextSlide);
-      preloadImage(nextSlide.dataset.background).then(() => {
-        activateSlide(nextIndex);
-        setTimeout(() => { isAnimating = false; }, 1200);
-      });
-      return;
-    }
-
-    activateSlide(nextIndex);
-    setTimeout(() => { isAnimating = false; }, 1200);
+    activateSlide((currentIndex + 1) % slides.length);
   }, 5000);
 }

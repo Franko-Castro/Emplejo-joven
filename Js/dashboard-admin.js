@@ -1061,10 +1061,13 @@ function initLogout() {
   document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
     e.preventDefault();
     try {
-      await fetch('php/logout.php', { method: 'POST', cache: 'no-store' });
+      await fetch(new URL('/php/logout.php', window.location.origin).href, {
+        method: 'POST',
+        cache: 'no-store',
+      });
     } catch {
     }
-    window.location.replace(new URL('index.html', document.baseURI).href);
+    window.location.replace(new URL('./', document.baseURI).href);
   });
 }
 

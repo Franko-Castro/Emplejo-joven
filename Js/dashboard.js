@@ -154,7 +154,8 @@ function initLogoutButton() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      logout();
+      // Redirigir directamente - el PHP destruirá la sesión
+      window.location.href = 'php/logout.php';
     });
   }
 }
@@ -162,13 +163,19 @@ function initLogoutButton() {
 /**
  * Cierra la sesión.
  */
-async function logout() {
+async function logout(logoutUrl) {
   try {
-    await fetch('php/logout.php', { method: 'POST', cache: 'no-store' });
+    const response = await fetch(logoutUrl, {
+      method: 'POST',
+      cache: 'no-store',
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    window.location.replace(new URL('./', document.baseURI).href);
   } catch (err) {
     console.error('Error al cerrar sesión:', err);
+    // Si falla, intentar con GET como fallback
+    window.location.assign(logoutUrl);
   }
-  window.location.replace(new URL('index.html', document.baseURI).href);
 }
 
 /* ============================================
